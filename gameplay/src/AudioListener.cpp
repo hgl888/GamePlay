@@ -3,7 +3,7 @@
 #include "AudioListener.h"
 #include "Game.h"
 
-namespace gameplay
+namespace vk
 {
 
 AudioListener::AudioListener()

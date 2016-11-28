@@ -1,6 +1,6 @@
 #include "PhysicsConstraint.h"
 
-namespace gameplay
+namespace vk
 {
 
 inline float PhysicsConstraint::getBreakingImpulse() const

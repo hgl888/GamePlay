@@ -3,7 +3,7 @@
 
 #include "gameplay.h"
 
-using namespace gameplay;
+using namespace vk;
 
 /**
  * Base class for all of the samples. 

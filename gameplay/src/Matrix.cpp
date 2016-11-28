@@ -4,7 +4,7 @@
 #include "Quaternion.h"
 #include "MathUtil.h"
 
-namespace gameplay
+namespace vk
 {
 
 static const float MATRIX_IDENTITY[16] =

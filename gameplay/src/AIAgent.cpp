@@ -2,7 +2,7 @@
 #include "AIAgent.h"
 #include "Node.h"
 
-namespace gameplay
+namespace vk
 {
 
 AIAgent::AIAgent()

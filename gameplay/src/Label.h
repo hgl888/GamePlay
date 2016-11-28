@@ -4,15 +4,13 @@
 #include "Control.h"
 #include "Theme.h"
 
-namespace gameplay
+namespace vk
 {
 
 /**
  * Defines a label control.
  * 
  * This is capable of rendering text within its border.
- *
- * @see http://gameplay3d.github.io/GamePlay/docs/file-formats.html#wiki-UI_Forms
  */
 class Label : public Control
 {

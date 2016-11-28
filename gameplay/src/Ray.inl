@@ -1,6 +1,6 @@
 #include "Ray.h"
 
-namespace gameplay
+namespace vk
 {
 
 inline Ray& Ray::operator*=(const Matrix& matrix)

@@ -12,17 +12,13 @@
 #include "ScriptTarget.h"
 #include "Gamepad.h"
 
-namespace gameplay
+namespace vk
 {
 
 class Container;
 class Form;
 
-/**
- * Defines the base class for all controls.
- *
- * @see http://gameplay3d.github.io/GamePlay/docs/file-formats.html#wiki-UI_Forms
- */
+
 class Control : public Ref, public AnimationTarget, public ScriptTarget
 {
     friend class Form;

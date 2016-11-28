@@ -5,7 +5,7 @@
 #include "BoundingSphere.h"
 #include "BoundingBox.h"
 
-namespace gameplay
+namespace vk
 {
 
 Ray::Ray()

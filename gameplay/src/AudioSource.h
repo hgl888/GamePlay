@@ -5,7 +5,7 @@
 #include "Ref.h"
 #include "Transform.h"
 
-namespace gameplay
+namespace vk
 {
 
 class AudioBuffer;

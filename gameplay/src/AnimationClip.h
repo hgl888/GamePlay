@@ -6,7 +6,7 @@
 #include "Animation.h"
 #include "ScriptTarget.h"
 
-namespace gameplay
+namespace vk
 {
 
 class Animation;

@@ -3,7 +3,7 @@
 
 #include "Vector2.h"
 
-namespace gameplay
+namespace vk
 {
 
 class Button;

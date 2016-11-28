@@ -5,7 +5,7 @@
 #include "Sample.h"
 #include "FirstPersonCamera.h"
 
-using namespace gameplay;
+using namespace vk;
 
 /**
  * Sample for 3D billboarding with cloud sprites

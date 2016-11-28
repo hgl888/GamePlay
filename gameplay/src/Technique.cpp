@@ -3,7 +3,7 @@
 #include "Material.h"
 #include "Node.h"
 
-namespace gameplay
+namespace vk
 {
 
 Technique::Technique(const char* id, Material* material)

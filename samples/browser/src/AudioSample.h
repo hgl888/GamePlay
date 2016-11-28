@@ -3,7 +3,7 @@
 
 #include "SamplesGame.h"
 
-using namespace gameplay;
+using namespace vk;
 
 class AudioSample : public Sample, Control::Listener
 {

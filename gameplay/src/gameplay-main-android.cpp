@@ -4,7 +4,7 @@
 #include <android_native_app_glue.h>
 #include "gameplay.h"
 
-using namespace gameplay;
+using namespace vk;
 
 extern struct android_app* __state;
 

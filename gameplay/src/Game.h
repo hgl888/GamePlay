@@ -15,19 +15,11 @@
 #include "Vector4.h"
 #include "TimeListener.h"
 
-namespace gameplay
+namespace vk
 {
 
 class ScriptController;
 
-/**
- * Defines the base class your game will extend for game initialization, logic and platform delegates.
- *
- * This represents a running cross-platform game application and provides an abstraction
- * to most typical platform functionality and events.
- *
- * @see http://gameplay3d.github.io/GamePlay/docs/file-formats.html#wiki-Game_Config
- */
 class Game
 {
     friend class Platform;

@@ -2,7 +2,7 @@
 #include "AudioBuffer.h"
 #include "FileSystem.h"
 
-namespace gameplay
+namespace vk
 {
 
 // Audio buffer cache

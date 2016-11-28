@@ -1,4 +1,4 @@
-namespace gameplay
+namespace vk
 {
 
 inline void MathUtil::addMatrix(const float* m, float scalar, float* dst)

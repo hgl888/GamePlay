@@ -57,7 +57,7 @@ static const std::vector<std::string>& luaGetClassRelatives(const char* type)
 #define POP_NESTED_VARIABLE() \
     lua_settop(_lua, top)
 
-namespace gameplay
+namespace vk
 {
 
 extern void splitURL(const std::string& url, std::string* file, std::string* id);
@@ -645,12 +645,12 @@ Script* ScriptController::getCurrentScript() const
 
 void ScriptController::print(const char* str)
 {
-    gameplay::print("%s", str);
+    vk::print("%s", str);
 }
 
 void ScriptController::print(const char* str1, const char* str2)
 {
-    gameplay::print("%s%s", str1, str2);
+    vk::print("%s%s", str1, str2);
 }
 
 ScriptController::ScriptController() : _lua(NULL)

@@ -9,7 +9,7 @@
 #include "Texture.h"
 #include "Effect.h"
 
-namespace gameplay
+namespace vk
 {
     class Node;
 

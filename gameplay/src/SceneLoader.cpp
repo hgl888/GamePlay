@@ -10,7 +10,7 @@
 #include "TileSet.h"
 #include "Light.h"
 
-namespace gameplay
+namespace vk
 {
 
 // Utility functions (shared with Properties).

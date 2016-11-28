@@ -1,6 +1,6 @@
 #include "BoundingBox.h"
 
-namespace gameplay
+namespace vk
 {
 
 inline BoundingBox& BoundingBox::operator*=(const Matrix& matrix)

@@ -4,7 +4,7 @@
 #include "gameplay.h"
 #include "Sample.h"
 
-using namespace gameplay;
+using namespace vk;
 
 /**
  * Sample for loading a scene from a .scene file.

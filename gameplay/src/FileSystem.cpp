@@ -27,7 +27,7 @@
 extern AAssetManager* __assetManager;
 #endif
 
-namespace gameplay
+namespace vk
 {
 
 #ifdef __ANDROID__

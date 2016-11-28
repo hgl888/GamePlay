@@ -5,7 +5,7 @@
 #include "Sample.h"
 #include "FirstPersonCamera.h"
 
-using namespace gameplay;
+using namespace vk;
 
 /**
  * Sample 3D audio within multiple sources and a listener bound to Nodes.

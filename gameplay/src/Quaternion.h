@@ -5,7 +5,7 @@
 #include "Matrix.h"
 #include "Plane.h"
 
-namespace gameplay
+namespace vk
 {
 
 class Matrix;

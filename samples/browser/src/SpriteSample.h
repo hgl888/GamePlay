@@ -4,7 +4,7 @@
 #include "gameplay.h"
 #include "Sample.h"
 
-using namespace gameplay;
+using namespace vk;
 
 /**
  * Sample drawing sprites in a scene with the Sprite class.

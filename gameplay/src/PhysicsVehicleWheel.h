@@ -5,7 +5,7 @@
 #include "PhysicsRigidBody.h"
 #include "Node.h"
 
-namespace gameplay
+namespace vk
 {
 
 class PhysicsVehicle;

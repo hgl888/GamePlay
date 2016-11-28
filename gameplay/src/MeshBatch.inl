@@ -1,6 +1,6 @@
 #include "MeshBatch.h"
 
-namespace gameplay
+namespace vk
 {
 
 Material* MeshBatch::getMaterial() const

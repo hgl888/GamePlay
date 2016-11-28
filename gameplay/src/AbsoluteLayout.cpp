@@ -3,7 +3,7 @@
 #include "AbsoluteLayout.h"
 #include "Container.h"
 
-namespace gameplay
+namespace vk
 {
 
 static AbsoluteLayout* __instance;

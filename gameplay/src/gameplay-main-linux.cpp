@@ -3,7 +3,7 @@
 
 #include "gameplay.h"
 
-using namespace gameplay;
+using namespace vk;
 
 extern int __argc;
 extern char** __argv;

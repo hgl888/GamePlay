@@ -1,6 +1,6 @@
 #include "ScriptController.h"
 
-namespace gameplay
+namespace vk
 {
 
 template <typename T>

@@ -4,7 +4,7 @@
 #include "gameplay.h"
 #include "Sample.h"
 
-using namespace gameplay;
+using namespace vk;
 
 /**
  * Samples basic input for keyboard, mouse, touch and accelerometer.

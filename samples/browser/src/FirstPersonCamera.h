@@ -3,7 +3,7 @@
 
 #include "gameplay.h"
 
-using namespace gameplay;
+using namespace vk;
 
 /**
  * FirstPersonCamera controls a camera like a first person shooter game.

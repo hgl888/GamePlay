@@ -4,7 +4,7 @@
 #include "gameplay.h"
 #include "VulkanExample.h"
 
-using namespace gameplay;
+using namespace vk;
 
 #ifndef _WINDOWS_
     #define WIN32_LEAN_AND_MEAN

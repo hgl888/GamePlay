@@ -2,7 +2,7 @@
 #include "PhysicsHingeConstraint.h"
 #include "Node.h"
 
-namespace gameplay
+namespace vk
 {
 
 void PhysicsHingeConstraint::setLimits(float minAngle, float maxAngle, float bounciness)

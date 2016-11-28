@@ -1,7 +1,7 @@
 #include "Base.h"
 #include "RenderTarget.h"
 
-namespace gameplay
+namespace vk
 {
 
 static std::vector<RenderTarget*> __renderTargets;

@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
-#pragma comment(linker, "/subsystem:windows")
+//#pragma comment(linker, "/subsystem:windows")
 #include <windows.h>
 #include <fcntl.h>
 #include <io.h>

@@ -3,7 +3,7 @@
 #include "Image.h"
 #include "FileSystem.h"
 
-namespace gameplay
+namespace vk
 {
 
 HeightField::HeightField(unsigned int columns, unsigned int rows)

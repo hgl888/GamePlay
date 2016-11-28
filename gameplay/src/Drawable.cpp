@@ -3,7 +3,7 @@
 #include "Node.h"
 
 
-namespace gameplay
+namespace vk
 {
 
 Drawable::Drawable()

@@ -1,7 +1,7 @@
 #include "Base.h"
 #include "AIMessage.h"
 
-namespace gameplay
+namespace vk
 {
 
 AIMessage::AIMessage()

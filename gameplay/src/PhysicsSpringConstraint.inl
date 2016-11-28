@@ -1,6 +1,6 @@
 #include "PhysicsSpringConstraint.h"
 
-namespace gameplay
+namespace vk
 {
 
 inline void PhysicsSpringConstraint::setAngularDampingX(float damping)

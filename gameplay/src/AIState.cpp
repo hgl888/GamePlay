@@ -4,7 +4,7 @@
 #include "AIStateMachine.h"
 #include "Node.h"
 
-namespace gameplay
+namespace vk
 {
 
 AIState* AIState::_empty = NULL;

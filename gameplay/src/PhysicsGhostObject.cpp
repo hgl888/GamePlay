@@ -3,7 +3,7 @@
 #include "Node.h"
 #include "Game.h"
 
-namespace gameplay
+namespace vk
 {
 
 PhysicsGhostObject::PhysicsGhostObject(Node* node, const PhysicsCollisionShape::Definition& shape, int group, int mask)

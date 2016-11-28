@@ -3,7 +3,7 @@
 
 #include "gameplay.h"
 
-using namespace gameplay;
+using namespace vk;
 
 static const unsigned int DEFAULT_LINE_COUNT = 81;
 
