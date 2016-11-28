@@ -67,8 +67,8 @@ private:
 	VkPhysicalDeviceFeatures mEnabledFeatures = {};
 	float mFpsTimer = 0.0f;
 	bool mViewUpdated = false;
-	uint32_t destWidth;
-	uint32_t destHeight;
+	uint32_t mDestWidth;
+	uint32_t mDestHeight;
 	bool resizing = false;
 	// Called if the window is resized and some resources have to be recreatesd
 
@@ -165,14 +165,14 @@ public:
 	// Use to adjust mouse zoom speed
 	float zoomSpeed = 1.0f;
 
-	VkCamera camera;
+	VkCamera mCamera;
 
 	glm::vec3 rotation = glm::vec3();
 	glm::vec3 cameraPos = glm::vec3();
 	glm::vec2 mousePos;
 
-	std::string title = "Vulkan Example";
-	std::string name = "vulkanExample";
+	std::string title = "VkEngine";
+	std::string name = "VkEngine";
 
 	struct
 	{

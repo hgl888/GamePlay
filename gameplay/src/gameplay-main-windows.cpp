@@ -33,7 +33,8 @@ extern "C" int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LP
 	game->InitVulkanExample(true);	
 	game->initSwapchain();
 	game->prepare();
-	game->renderLoop();
+	//game->renderLoop();
+	int result = platform->enterMessagePump();
 	game->UnInitVulkanExample();
 	delete platform;
 	return 0;

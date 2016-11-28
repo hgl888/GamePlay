@@ -29,8 +29,6 @@ static double __timeTicksPerMillis;
 static double __timeStart;
 static double __timeAbsolute;
 static bool __vsync = WINDOW_VSYNC;
-static HDC __hdc = 0;
-static HGLRC __hrc = 0;
 static bool __mouseCaptured = false;
 static POINT __mouseCapturePoint = { 0, 0 };
 static bool __multiSampling = false;
@@ -826,8 +824,6 @@ int Platform::enterMessagePump()
     GP_ASSERT(__timeTicksPerMillis);
     __timeStart = queryTime.QuadPart / __timeTicksPerMillis;
 
-    SwapBuffers(__hdc);
-
     if (_game->getState() != Game::RUNNING)
         _game->run();
 
@@ -842,7 +838,7 @@ int Platform::enterMessagePump()
 
             if (msg.message == WM_QUIT)
             {
-                vk::Platform::shutdownInternal();
+                //vk::Platform::shutdownInternal();
                 return msg.wParam;
             }
         }
@@ -867,7 +863,6 @@ int Platform::enterMessagePump()
             }
 #endif
             _game->frame();
-            SwapBuffers(__hdc);
         }
 
         // If we are done, then exit.
@@ -933,8 +928,6 @@ void Platform::setVsync(bool enable)
 
 void Platform::swapBuffers()
 {
-    if (__hdc)
-        SwapBuffers(__hdc);
 }
 
 void Platform::sleep(long ms)

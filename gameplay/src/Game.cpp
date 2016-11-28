@@ -409,12 +409,13 @@ void Game::loadMesh(std::string filename, vkMeshLoader::MeshBuffer * meshBuffer,
 
 void Game::renderLoop()
 {
-	destWidth = width;
-	destHeight = height;
+	mDestWidth = width;
+	mDestHeight = height;
 #if defined(_WIN32)
 	MSG msg;
 	while (TRUE)
 	{
+
 		auto tStart = std::chrono::high_resolution_clock::now();
 		if (mViewUpdated)
 		{
@@ -438,8 +439,8 @@ void Game::renderLoop()
 		auto tEnd = std::chrono::high_resolution_clock::now();
 		auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 		frameTimer = (float)tDiff / 1000.0f;
-		camera.update(frameTimer);
-		if (camera.moving())
+		mCamera.update(frameTimer);
+		if (mCamera.moving())
 		{
 			mViewUpdated = true;
 		}
@@ -506,7 +507,7 @@ void Game::renderLoop()
 			auto tEnd = std::chrono::high_resolution_clock::now();
 			auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 			frameTimer = tDiff / 1000.0f;
-			camera.update(frameTimer);
+			mCamera.update(frameTimer);
 			// Convert to clamped timer value
 			if (!paused)
 			{
@@ -529,19 +530,19 @@ void Game::renderLoop()
 			// todo : check if gamepad is present
 			// todo : time based and relative axis positions
 			bool updateView = false;
-			if (camera.type != VkCamera::CameraType::firstperson)
+			if (mCamera.type != VkCamera::CameraType::firstperson)
 			{
 				// Rotate
 				if (std::abs(gamePadState.axisLeft.x) > deadZone)
 				{
 					rotation.y += gamePadState.axisLeft.x * 0.5f * rotationSpeed;
-					camera.rotate(glm::vec3(0.0f, gamePadState.axisLeft.x * 0.5f, 0.0f));
+					mCamera.rotate(glm::vec3(0.0f, gamePadState.axisLeft.x * 0.5f, 0.0f));
 					updateView = true;
 				}
 				if (std::abs(gamePadState.axisLeft.y) > deadZone)
 				{
 					rotation.x -= gamePadState.axisLeft.y * 0.5f * rotationSpeed;
-					camera.rotate(glm::vec3(gamePadState.axisLeft.y * 0.5f, 0.0f, 0.0f));
+					mCamera.rotate(glm::vec3(gamePadState.axisLeft.y * 0.5f, 0.0f, 0.0f));
 					updateView = true;
 				}
 				// Zoom
@@ -557,7 +558,7 @@ void Game::renderLoop()
 			}
 			else
 			{
-				updateView = camera.updatePad(gamePadState.axisLeft, gamePadState.axisRight, frameTimer);
+				updateView = mCamera.updatePad(gamePadState.axisLeft, gamePadState.axisRight, frameTimer);
 				if (updateView)
 				{
 					viewChanged();
@@ -579,8 +580,8 @@ void Game::renderLoop()
 		auto tEnd = std::chrono::high_resolution_clock::now();
 		auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 		frameTimer = tDiff / 1000.0f;
-		camera.update(frameTimer);
-		if (camera.moving())
+		mCamera.update(frameTimer);
+		if (mCamera.moving())
 		{
 			mViewUpdated = true;
 		}
@@ -623,8 +624,8 @@ void Game::renderLoop()
 		auto tEnd = std::chrono::high_resolution_clock::now();
 		auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
 		frameTimer = tDiff / 1000.0f;
-		camera.update(frameTimer);
-		if (camera.moving())
+		mCamera.update(frameTimer);
+		if (mCamera.moving())
 		{
 			mViewUpdated = true;
 		}
@@ -1075,21 +1076,21 @@ void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 
-		if (camera.firstperson)
+		if (mCamera.firstperson)
 		{
 			switch (wParam)
 			{
 			case Keyboard::Key::KEY_W:
-				camera.keys.up = true;
+				mCamera.keys.up = true;
 				break;
 			case Keyboard::Key::KEY_S:
-				camera.keys.down = true;
+				mCamera.keys.down = true;
 				break;
 			case Keyboard::Key::KEY_A:
-				camera.keys.left = true;
+				mCamera.keys.left = true;
 				break;
 			case Keyboard::Key::KEY_D:
-				camera.keys.right = true;
+				mCamera.keys.right = true;
 				break;
 			}
 		}
@@ -1097,21 +1098,21 @@ void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		keyPressed((uint32_t)wParam);
 		break;
 	case WM_KEYUP:
-		if (camera.firstperson)
+		if (mCamera.firstperson)
 		{
 			switch (wParam)
 			{
 			case Keyboard::Key::KEY_W:
-				camera.keys.up = false;
+				mCamera.keys.up = false;
 				break;
 			case Keyboard::Key::KEY_S:
-				camera.keys.down = false;
+				mCamera.keys.down = false;
 				break;
 			case Keyboard::Key::KEY_A:
-				camera.keys.left = false;
+				mCamera.keys.left = false;
 				break;
 			case Keyboard::Key::KEY_D:
-				camera.keys.right = false;
+				mCamera.keys.right = false;
 				break;
 			}
 		}
@@ -1126,7 +1127,7 @@ void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		short wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
 		zoom += (float)wheelDelta * 0.005f * zoomSpeed;
-		camera.translate(glm::vec3(0.0f, 0.0f, (float)wheelDelta * 0.005f * zoomSpeed));
+		mCamera.translate(glm::vec3(0.0f, 0.0f, (float)wheelDelta * 0.005f * zoomSpeed));
 		mViewUpdated = true;
 		break;
 	}
@@ -1136,7 +1137,7 @@ void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			int32_t posx = LOWORD(lParam);
 			int32_t posy = HIWORD(lParam);
 			zoom += (mousePos.y - (float)posy) * .005f * zoomSpeed;
-			camera.translate(glm::vec3(-0.0f, 0.0f, (mousePos.y - (float)posy) * .005f * zoomSpeed));
+			mCamera.translate(glm::vec3(-0.0f, 0.0f, (mousePos.y - (float)posy) * .005f * zoomSpeed));
 			mousePos = glm::vec2((float)posx, (float)posy);
 			mViewUpdated = true;
 		}
@@ -1146,7 +1147,7 @@ void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			int32_t posy = HIWORD(lParam);
 			rotation.x += (mousePos.y - (float)posy) * 1.25f * rotationSpeed;
 			rotation.y -= (mousePos.x - (float)posx) * 1.25f * rotationSpeed;
-			camera.rotate(glm::vec3((mousePos.y - (float)posy) * camera.rotationSpeed, -(mousePos.x - (float)posx) * camera.rotationSpeed, 0.0f));
+			mCamera.rotate(glm::vec3((mousePos.y - (float)posy) * mCamera.rotationSpeed, -(mousePos.x - (float)posx) * mCamera.rotationSpeed, 0.0f));
 			mousePos = glm::vec2((float)posx, (float)posy);
 			mViewUpdated = true;
 		}
@@ -1156,7 +1157,7 @@ void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			int32_t posy = HIWORD(lParam);
 			cameraPos.x -= (mousePos.x - (float)posx) * 0.01f;
 			cameraPos.y -= (mousePos.y - (float)posy) * 0.01f;
-			camera.translate(glm::vec3(-(mousePos.x - (float)posx) * 0.01f, -(mousePos.y - (float)posy) * 0.01f, 0.0f));
+			mCamera.translate(glm::vec3(-(mousePos.x - (float)posx) * 0.01f, -(mousePos.y - (float)posy) * 0.01f, 0.0f));
 			mViewUpdated = true;
 			mousePos.x = (float)posx;
 			mousePos.y = (float)posy;
@@ -1167,8 +1168,8 @@ void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			if ((resizing) || ((wParam == SIZE_MAXIMIZED) || (wParam == SIZE_RESTORED)))
 			{
-				destWidth = LOWORD(lParam);
-				destHeight = HIWORD(lParam);
+				mDestWidth = LOWORD(lParam);
+				mDestHeight = HIWORD(lParam);
 				windowResize();
 			}
 		}
@@ -1375,20 +1376,20 @@ void Game::handleEvent(const xcb_generic_event_t *event)
 		{
 			rotation.x += (mousePos.y - (float)motion->event_y) * 1.25f;
 			rotation.y -= (mousePos.x - (float)motion->event_x) * 1.25f;
-			camera.rotate(glm::vec3((mousePos.y - (float)motion->event_y) * camera.rotationSpeed, -(mousePos.x - (float)motion->event_x) * camera.rotationSpeed, 0.0f));
+			mCamera.rotate(glm::vec3((mousePos.y - (float)motion->event_y) * mCamera.rotationSpeed, -(mousePos.x - (float)motion->event_x) * mCamera.rotationSpeed, 0.0f));
 			mViewUpdated = true;
 		}
 		if (mouseButtons.right)
 		{
 			zoom += (mousePos.y - (float)motion->event_y) * .005f;
-			camera.translate(glm::vec3(-0.0f, 0.0f, (mousePos.y - (float)motion->event_y) * .005f * zoomSpeed));
+			mCamera.translate(glm::vec3(-0.0f, 0.0f, (mousePos.y - (float)motion->event_y) * .005f * zoomSpeed));
 			mViewUpdated = true;
 		}
 		if (mouseButtons.middle)
 		{
 			cameraPos.x -= (mousePos.x - (float)motion->event_x) * 0.01f;
 			cameraPos.y -= (mousePos.y - (float)motion->event_y) * 0.01f;
-			camera.translate(glm::vec3(-(mousePos.x - (float)(float)motion->event_x) * 0.01f, -(mousePos.y - (float)motion->event_y) * 0.01f, 0.0f));
+			mCamera.translate(glm::vec3(-(mousePos.x - (float)(float)motion->event_x) * 0.01f, -(mousePos.y - (float)motion->event_y) * 0.01f, 0.0f));
 			mViewUpdated = true;
 			mousePos.x = (float)motion->event_x;
 			mousePos.y = (float)motion->event_y;
@@ -1424,16 +1425,16 @@ void Game::handleEvent(const xcb_generic_event_t *event)
 		switch (keyEvent->detail)
 		{
 		case KEY_W:
-			camera.keys.up = true;
+			mCamera.keys.up = true;
 			break;
 		case KEY_S:
-			camera.keys.down = true;
+			mCamera.keys.down = true;
 			break;
 		case KEY_A:
-			camera.keys.left = true;
+			mCamera.keys.left = true;
 			break;
 		case KEY_D:
-			camera.keys.right = true;
+			mCamera.keys.right = true;
 			break;
 		case KEY_P:
 			paused = !paused;
@@ -1453,16 +1454,16 @@ void Game::handleEvent(const xcb_generic_event_t *event)
 		switch (keyEvent->detail)
 		{
 		case KEY_W:
-			camera.keys.up = false;
+			mCamera.keys.up = false;
 			break;
 		case KEY_S:
-			camera.keys.down = false;
+			mCamera.keys.down = false;
 			break;
 		case KEY_A:
-			camera.keys.left = false;
+			mCamera.keys.left = false;
 			break;
 		case KEY_D:
-			camera.keys.right = false;
+			mCamera.keys.right = false;
 			break;
 		case KEY_ESCAPE:
 			quit = true;
@@ -1479,9 +1480,9 @@ void Game::handleEvent(const xcb_generic_event_t *event)
 		const xcb_configure_notify_event_t *cfgEvent = (const xcb_configure_notify_event_t *)event;
 		if ((prepared) && ((cfgEvent->width != width) || (cfgEvent->height != height)))
 		{
-			destWidth = cfgEvent->width;
-			destHeight = cfgEvent->height;
-			if ((destWidth > 0) && (destHeight > 0))
+			mDestWidth = cfgEvent->width;
+			mDestHeight = cfgEvent->height;
+			if ((mDestWidth > 0) && (mDestHeight > 0))
 			{
 				windowResize();
 			}
@@ -1678,8 +1679,8 @@ void Game::windowResize()
 	prepared = false;
 
 	// Recreate swap chain
-	width = destWidth;
-	height = destHeight;
+	width = mDestWidth;
+	height = mDestHeight;
 	createSetupCommandBuffer();
 	setupSwapChain();
 
@@ -1713,7 +1714,7 @@ void Game::windowResize()
 		updateTextOverlay();
 	}
 
-	camera.updateAspectRatio((float)width / (float)height);
+	mCamera.updateAspectRatio((float)width / (float)height);
 
 	// Notify derived class
 	windowResized();
@@ -1827,6 +1828,9 @@ bool Game::isVsync()
 
 int Game::run()
 {
+	mDestWidth = width;
+	mDestHeight = height;
+
     if (_state != UNINITIALIZED)
         return -1;
 
@@ -1847,6 +1851,8 @@ int Game::run()
 
 bool Game::startup()
 {
+	_state = RUNNING;
+	return true;
     if (_state != UNINITIALIZED)
         return false;
 
@@ -2046,6 +2052,47 @@ void Game::exit()
 
 void Game::frame()
 {
+	auto tStart = std::chrono::high_resolution_clock::now();
+	if (mViewUpdated)
+	{
+		mViewUpdated = false;
+		viewChanged();
+	}
+	render();
+	frameCounter++;
+	auto tEnd = std::chrono::high_resolution_clock::now();
+	auto tDiff = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
+	frameTimer = (float)tDiff / 1000.0f;
+	mCamera.update(frameTimer);
+	if (mCamera.moving())
+	{
+		mViewUpdated = true;
+	}
+	// Convert to clamped timer value
+	if (!paused)
+	{
+		timer += timerSpeed * frameTimer;
+		if (timer > 1.0)
+		{
+			timer -= 1.0f;
+		}
+	}
+	mFpsTimer += (float)tDiff;
+	if (mFpsTimer > 1000.0f)
+	{
+		if (!enableTextOverlay)
+		{
+			std::string windowTitle = getWindowTitle();
+			SetWindowText(mWindow, windowTitle.c_str());
+		}
+		lastFPS = roundf(1.0f / frameTimer);
+		updateTextOverlay();
+		mFpsTimer = 0.0f;
+		frameCounter = 0;
+	}
+	vkDeviceWaitIdle(mDevice);
+	return;
+
     if (!_initialized)
     {
         // Perform lazy first time initialization
