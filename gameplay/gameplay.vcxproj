@@ -128,6 +128,10 @@
     <ClCompile Include="src\VertexAttributeBinding.cpp" />
     <ClCompile Include="src\VertexFormat.cpp" />
     <ClCompile Include="src\VerticalLayout.cpp" />
+    <ClCompile Include="vk\vulkanandroid.cpp" />
+    <ClCompile Include="vk\vulkandebug.cpp" />
+    <ClCompile Include="vk\vulkanexamplebase.cpp" />
+    <ClCompile Include="vk\vulkantools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AbsoluteLayout.h" />
@@ -245,6 +249,24 @@
     <ClInclude Include="src\VertexAttributeBinding.h" />
     <ClInclude Include="src\VertexFormat.h" />
     <ClInclude Include="src\VerticalLayout.h" />
+    <ClInclude Include="vk\camera.hpp" />
+    <ClInclude Include="vk\frustum.hpp" />
+    <ClInclude Include="vk\keycodes.hpp" />
+    <ClInclude Include="vk\threadpool.hpp" />
+    <ClInclude Include="vk\VDeleter.hpp" />
+    <ClInclude Include="vk\vulkanandroid.h" />
+    <ClInclude Include="vk\vulkanbuffer.hpp" />
+    <ClInclude Include="vk\vulkandebug.h" />
+    <ClInclude Include="vk\vulkandevice.hpp" />
+    <ClInclude Include="vk\VulkanExample.h" />
+    <ClInclude Include="vk\vulkanexamplebase.h" />
+    <ClInclude Include="vk\vulkanframebuffer.hpp" />
+    <ClInclude Include="vk\vulkanheightmap.hpp" />
+    <ClInclude Include="vk\vulkanMeshLoader.hpp" />
+    <ClInclude Include="vk\vulkanswapchain.hpp" />
+    <ClInclude Include="vk\vulkantextoverlay.hpp" />
+    <ClInclude Include="vk\vulkanTextureLoader.hpp" />
+    <ClInclude Include="vk\vulkantools.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\materials\terrain.material" />
@@ -295,12 +317,13 @@
     <ProjectGuid>{1032BA4B-57EB-4348-9E03-29DD63E80E4A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>gameplay</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugMem|x64'" Label="Configuration">
@@ -347,8 +370,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;..\external-deps\include;$(DXSDK_DIR)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;VK_USE_PLATFORM_WIN32_KHR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\external-deps\include;..\external\glm;..\external\gli;..\external\assimp;..\external;vk;$(DXSDK_DIR)include;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>
       </RuntimeTypeInfo>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>

@@ -2,6 +2,7 @@
 #ifdef WIN32
 
 #include "gameplay.h"
+#include "VulkanExample.h"
 
 using namespace gameplay;
 
@@ -10,18 +11,40 @@ using namespace gameplay;
     #include <windows.h>
 #endif
 
+
+VulkanExample *vulkanExample;
+LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (vulkanExample != NULL)
+	{
+		vulkanExample->handleMessages(hWnd, uMsg, wParam, lParam);
+	}
+	return (DefWindowProc(hWnd, uMsg, wParam, lParam));
+}
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+{
+	for (size_t i = 0; i < __argc; i++) { VulkanExample::args.push_back(__argv[i]); };
+	vulkanExample = new VulkanExample();
+	vulkanExample->setupWindow(hInstance, WndProc);
+	vulkanExample->initSwapchain();
+	vulkanExample->prepare();
+	vulkanExample->renderLoop();
+	delete(vulkanExample);
+	return 0;
+}
+
 /**
  * Main entry point.
  */
-extern "C" int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int cmdShow)
-{
-    Game* game = Game::getInstance();
-    Platform* platform = Platform::create(game);
-    GP_ASSERT(platform);
-    int result = platform->enterMessagePump();
-    delete platform;
-    return result;
-}
+//extern "C" int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int cmdShow)
+//{
+//	Game* game = Game::getInstance();
+//	Platform* platform = Platform::create(game);
+//	GP_ASSERT(platform);
+//	int result = platform->enterMessagePump();
+//	delete platform;
+//	return result;
+//}
 
 #endif
 #endif

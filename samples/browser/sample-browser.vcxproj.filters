@@ -396,6 +396,9 @@
     <ClInclude Include="src\FontSample.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\VulkanExample.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\MeshPrimitiveSample.cpp">

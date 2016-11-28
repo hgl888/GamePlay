@@ -143,3 +143,5 @@ gameplay.xcworkspace/xcshareddata/gameplay.xccheckout
 /samples/spaceship/sample-spaceship.vcxproj.user
 *.opendb
 *.db
+external/
+samples/data/

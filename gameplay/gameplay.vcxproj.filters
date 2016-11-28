@@ -16,6 +16,9 @@
     <Filter Include="res\ui">
       <UniqueIdentifier>{eb377577-593a-469f-9361-b6950a99e431}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vk">
+      <UniqueIdentifier>{72b4dbc5-a4d0-45b0-9df6-be23f665ddb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Plane.cpp">
@@ -356,6 +359,18 @@
     </ClCompile>
     <ClCompile Include="src\Drawable.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="vk\vulkanandroid.cpp">
+      <Filter>vk</Filter>
+    </ClCompile>
+    <ClCompile Include="vk\vulkandebug.cpp">
+      <Filter>vk</Filter>
+    </ClCompile>
+    <ClCompile Include="vk\vulkanexamplebase.cpp">
+      <Filter>vk</Filter>
+    </ClCompile>
+    <ClCompile Include="vk\vulkantools.cpp">
+      <Filter>vk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -703,6 +718,60 @@
     </ClInclude>
     <ClInclude Include="src\Drawable.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\camera.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\frustum.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\keycodes.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\threadpool.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\VDeleter.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkanandroid.h">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkanbuffer.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkandebug.h">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkandevice.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkanexamplebase.h">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkanframebuffer.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkanheightmap.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkanMeshLoader.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkanswapchain.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkantextoverlay.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkanTextureLoader.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vulkantools.h">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\VulkanExample.h">
+      <Filter>vk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
