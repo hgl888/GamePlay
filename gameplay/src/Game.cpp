@@ -728,7 +728,7 @@ void Game::submitFrame()
 	VK_CHECK_RESULT(vkQueueWaitIdle(mQueue));
 }
 
-void Game::InitVulkanExampleBase(bool enableValidation, PFN_GetEnabledFeatures enabledFeaturesFn)
+void Game::InitVulkanExample(bool enableValidation, PFN_GetEnabledFeatures enabledFeaturesFn)
 {
 
 #if defined(__ANDROID__)
@@ -761,7 +761,7 @@ void Game::InitVulkanExampleBase(bool enableValidation, PFN_GetEnabledFeatures e
 #endif
 }
 
-void Game::UnInitVulkanExampleBase()
+void Game::UnInitVulkanExample()
 {
 	// Clean up Vulkan resources
 	mSwapChain.cleanup();

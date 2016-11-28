@@ -209,9 +209,9 @@ public:
 	xcb_intern_atom_reply_t *atom_wm_delete_window;
 #endif
 
-	void InitVulkanExampleBase(bool enableValidation, PFN_GetEnabledFeatures enabledFeaturesFn = nullptr);
+	virtual void InitVulkanExample(bool enableValidation, PFN_GetEnabledFeatures enabledFeaturesFn = nullptr);
 
-	void UnInitVulkanExampleBase();
+	virtual void UnInitVulkanExample();
 
 	// Setup the vulkan instance, enable required extensions and connect to the physical device (GPU)
 	void initVulkan(bool enableValidation);

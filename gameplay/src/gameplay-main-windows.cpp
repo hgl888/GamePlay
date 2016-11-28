@@ -12,29 +12,36 @@ using namespace vk;
 #endif
 
 
-VulkanExample *vulkanExample;
+//VulkanExample *vulkanExample;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (vulkanExample != NULL)
+	Game* game = Game::getInstance();
+	if (game != NULL)
 	{
-		vulkanExample->handleMessages(hWnd, uMsg, wParam, lParam);
+		game->handleMessages(hWnd, uMsg, wParam, lParam);
 	}
 	return (DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+
+/**
+* Main entry point.
+*/
+extern "C" int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int cmdShow)
 {
-	vulkanExample = new VulkanExample();
-	vulkanExample->setupWindow(hInstance, WndProc);
-	vulkanExample->initSwapchain();
-	vulkanExample->prepare();
-	vulkanExample->renderLoop();
-	delete(vulkanExample);
+	Game* game = Game::getInstance();
+	game->InitVulkanExample(true);
+	game->setupWindow(hInstance, WndProc);
+	game->initSwapchain();
+	game->prepare();
+	game->renderLoop();
+	game->UnInitVulkanExample();
 	return 0;
 }
 
-/**
- * Main entry point.
- */
+
+///**
+// * Main entry point.
+// */
 //extern "C" int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int cmdShow)
 //{
 //	Game* game = Game::getInstance();
