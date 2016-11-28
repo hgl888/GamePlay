@@ -2,9 +2,6 @@
 #include "FileSystem.h"
 #include "ScriptController.h"
 
-#ifndef GP_NO_LUA_BINDINGS
-#include "lua/lua_all_bindings.h"
-#else
 // Need to define global functions expoed by lua bindings that are used by ScriptController
 #define luaConvertObjectPointer(ptr, fromType, toType) NULL
 static const std::vector<std::string>& luaGetClassRelatives(const char* type)
@@ -12,7 +9,6 @@ static const std::vector<std::string>& luaGetClassRelatives(const char* type)
     static std::vector<std::string> empty;
     return empty;
 }
-#endif
 
 #define GENERATE_LUA_GET_POINTER(type, checkFunc) \
     ScriptController* sc = Game::getInstance()->getScriptController(); \
@@ -723,10 +719,6 @@ void ScriptController::initialize()
     if (!_lua)
         GP_ERROR("Failed to initialize Lua scripting engine.");
     luaL_openlibs(_lua);
-
-#ifndef GP_NO_LUA_BINDINGS
-    lua_RegisterAllBindings();
-#endif
 
     // Append to the LUA_PATH to allow scripts to be found in the resource folder on all platforms
     appendLuaPath(_lua, FileSystem::getResourcePath());
