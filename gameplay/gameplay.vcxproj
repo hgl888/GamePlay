@@ -130,7 +130,6 @@
     <ClCompile Include="src\VerticalLayout.cpp" />
     <ClCompile Include="vk\vulkanandroid.cpp" />
     <ClCompile Include="vk\vulkandebug.cpp" />
-    <ClCompile Include="vk\vulkanexamplebase.cpp" />
     <ClCompile Include="vk\vulkantools.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -258,8 +257,6 @@
     <ClInclude Include="vk\vulkanbuffer.hpp" />
     <ClInclude Include="vk\vulkandebug.h" />
     <ClInclude Include="vk\vulkandevice.hpp" />
-    <ClInclude Include="vk\VulkanExample.h" />
-    <ClInclude Include="vk\vulkanexamplebase.h" />
     <ClInclude Include="vk\vulkanframebuffer.hpp" />
     <ClInclude Include="vk\vulkanheightmap.hpp" />
     <ClInclude Include="vk\vulkanMeshLoader.hpp" />

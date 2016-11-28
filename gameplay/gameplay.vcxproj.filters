@@ -363,9 +363,6 @@
     <ClCompile Include="vk\vulkandebug.cpp">
       <Filter>vk</Filter>
     </ClCompile>
-    <ClCompile Include="vk\vulkanexamplebase.cpp">
-      <Filter>vk</Filter>
-    </ClCompile>
     <ClCompile Include="vk\vulkantools.cpp">
       <Filter>vk</Filter>
     </ClCompile>
@@ -740,9 +737,6 @@
     <ClInclude Include="vk\vulkandevice.hpp">
       <Filter>vk</Filter>
     </ClInclude>
-    <ClInclude Include="vk\vulkanexamplebase.h">
-      <Filter>vk</Filter>
-    </ClInclude>
     <ClInclude Include="vk\vulkanframebuffer.hpp">
       <Filter>vk</Filter>
     </ClInclude>
@@ -762,9 +756,6 @@
       <Filter>vk</Filter>
     </ClInclude>
     <ClInclude Include="vk\vulkantools.h">
-      <Filter>vk</Filter>
-    </ClInclude>
-    <ClInclude Include="vk\VulkanExample.h">
       <Filter>vk</Filter>
     </ClInclude>
     <ClInclude Include="vk\vkcamera.hpp">

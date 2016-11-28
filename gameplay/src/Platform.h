@@ -14,11 +14,6 @@ namespace vk
 
 class Game;
 
-/**
- * Defines a platform abstraction.
- *
- * This class has only a few public methods for creating a platform
- */
 class Platform
 {
 public:
@@ -28,19 +23,8 @@ public:
     friend class ScreenDisplayer;
     friend class FileSystem;
 
-    /**
-     * Destructor.
-     */
     ~Platform();
-
-    /**
-     * Creates a platform for the specified game which it will interact with.
-     *
-     * @param game The game to create a platform for.
-     *
-     * @return The created platform interface.
-     * @script{ignore}
-     */
+   
     static Platform* create(Game* game);
 
     /**

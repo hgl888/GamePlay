@@ -29,8 +29,6 @@ static double __timeTicksPerMillis;
 static double __timeStart;
 static double __timeAbsolute;
 static bool __vsync = WINDOW_VSYNC;
-static HINSTANCE __hinstance = 0;
-static HWND __hwnd = 0;
 static HDC __hdc = 0;
 static HGLRC __hrc = 0;
 static bool __mouseCaptured = false;
@@ -38,6 +36,9 @@ static POINT __mouseCapturePoint = { 0, 0 };
 static bool __multiSampling = false;
 static bool __cursorVisible = true;
 static unsigned int __gamepadsConnected = 0;
+
+static HWND gWindow;
+static HINSTANCE gWindowInstance;
 
 #ifdef GP_USE_GAMEPAD
 static const unsigned int XINPUT_BUTTON_COUNT = 14;
@@ -305,7 +306,7 @@ static vk::Keyboard::Key getKey(WPARAM win32KeyCode, bool shiftDown)
 static void UpdateCapture(LPARAM lParam)
 {
     if ((lParam & MK_LBUTTON) || (lParam & MK_MBUTTON) || (lParam & MK_RBUTTON))
-        SetCapture(__hwnd);
+        SetCapture(gWindow);
     else
         ReleaseCapture();
 }
@@ -313,7 +314,7 @@ static void UpdateCapture(LPARAM lParam)
 static void WarpMouse(int clientX, int clientY)
 {
     POINT p = { clientX, clientY };
-    ClientToScreen(__hwnd, &p);
+    ClientToScreen(gWindow, &p);
     SetCursorPos(p.x, p.y);
 }
 
@@ -333,9 +334,15 @@ static void getDesktopResolution(int& width, int& height)
 
 LRESULT CALLBACK __WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    static vk::Game* game = vk::Game::getInstance();
 
-    if (!game->isInitialized() || hwnd != __hwnd)
+    static vk::Game* game = vk::Game::getInstance();
+	if (game != NULL)
+	{
+		game->handleMessages(hwnd, msg, wParam, lParam);
+	}
+	return (DefWindowProc(hwnd, msg, wParam, lParam));
+
+    if (!game->isInitialized() || hwnd != gWindow)
     {
         // Ignore messages that are not for our game window.
         return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -348,7 +355,7 @@ LRESULT CALLBACK __WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
     case WM_CLOSE:
 #ifdef GP_USE_MEM_LEAK_DETECTION
-		DestroyWindow(__hwnd);
+		DestroyWindow(gWindow);
 #else
         exit(0);
 #endif
@@ -440,7 +447,7 @@ LRESULT CALLBACK __WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         tagPOINT point;
         point.x = GET_X_LPARAM(lParam);
         point.y = GET_Y_LPARAM(lParam);
-        ScreenToClient(__hwnd, &point);
+        ScreenToClient(gWindow, &point);
         vk::Platform::mouseEventInternal(vk::Mouse::MOUSE_WHEEL, point.x, point.y, GET_WHEEL_DELTA_WPARAM(wParam) / 120);
         break;
 
@@ -518,6 +525,7 @@ extern int strcmpnocase(const char* s1, const char* s2)
     return _strcmpi(s1, s2);
 }
 
+
 Platform::Platform(Game* game)
     : _game(game)
 {
@@ -525,10 +533,10 @@ Platform::Platform(Game* game)
 
 Platform::~Platform()
 {
-    if (__hwnd)
+    if (gWindow)
     {
-        DestroyWindow(__hwnd);
-        __hwnd = 0;
+        DestroyWindow(gWindow);
+		gWindow = 0;
     }
 }
 
@@ -567,7 +575,7 @@ bool createWindow(WindowCreationParams* params, HWND* hwnd, HDC* hdc)
     AdjustWindowRectEx(&rect, style, FALSE, styleEx);
 
     // Create the native Windows window.
-    *hwnd = CreateWindowEx(styleEx, "gameplay", windowName.c_str(), style, 0, 0, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, __hinstance, NULL);
+    *hwnd = CreateWindowEx(styleEx, "gameplay", windowName.c_str(), style, 0, 0, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, gWindowInstance, NULL);
     if (*hwnd == NULL)
     {
         GP_ERROR("Failed to create window.");
@@ -591,210 +599,6 @@ bool createWindow(WindowCreationParams* params, HWND* hwnd, HDC* hdc)
     return true;
 }
 
-bool initializeGL(WindowCreationParams* params)
-{
-    // Create a temporary window and context to we can initialize GLEW and get access
-    // to additional OpenGL extension functions. This is a neccessary evil since the
-    // function for querying GL extensions is a GL extension itself.
-    HWND hwnd = NULL;
-    HDC hdc = NULL;
-
-    if (params)
-    {
-        if (!createWindow(params, &hwnd, &hdc))
-            return false;
-    }
-    else
-    {
-        hwnd = __hwnd;
-        hdc = __hdc;
-    }
-
-    PIXELFORMATDESCRIPTOR pfd;
-    memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
-    pfd.nSize  = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.nVersion   = 1;
-    pfd.dwFlags    = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.cColorBits = DEFAULT_COLOR_BUFFER_SIZE;
-    pfd.cDepthBits = DEFAULT_DEPTH_BUFFER_SIZE;
-    pfd.cStencilBits = DEFAULT_STENCIL_BUFFER_SIZE;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-
-    int pixelFormat = ChoosePixelFormat(hdc, &pfd);
-    if (pixelFormat == 0)
-    {
-        DestroyWindow(hwnd);
-        GP_ERROR("Failed to choose a pixel format.");
-        return false;
-    }
-
-    if (!SetPixelFormat(hdc, pixelFormat, &pfd))
-    {
-        DestroyWindow(hwnd);
-        GP_ERROR("Failed to set the pixel format.");
-        return false;
-    }
-
-    HGLRC tempContext = wglCreateContext(hdc);
-    if (!tempContext)
-    {
-        DestroyWindow(hwnd);
-        GP_ERROR("Failed to create temporary context for initialization.");
-        return false;
-    }
-    wglMakeCurrent(hdc, tempContext);
-
-    // Initialize GLEW
-    if (GLEW_OK != glewInit())
-    {
-        wglDeleteContext(tempContext);
-        DestroyWindow(hwnd);
-        GP_ERROR("Failed to initialize GLEW.");
-        return false;
-    }
-
-    if( wglChoosePixelFormatARB && wglCreateContextAttribsARB )
-    {
-    // Choose pixel format using wglChoosePixelFormatARB, which allows us to specify
-    // additional attributes such as multisampling.
-    //
-    // Note: Keep multisampling attributes at the start of the attribute lists since code below
-    // assumes they are array elements 0 through 3.
-    int attribList[] = {
-        WGL_SAMPLES_ARB, params ? params->samples : 0,
-        WGL_SAMPLE_BUFFERS_ARB, params ? (params->samples > 0 ? 1 : 0) : 0,
-        WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-        WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-        WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
-        WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
-        WGL_COLOR_BITS_ARB, DEFAULT_COLOR_BUFFER_SIZE,
-        WGL_DEPTH_BITS_ARB, DEFAULT_DEPTH_BUFFER_SIZE,
-        WGL_STENCIL_BITS_ARB, DEFAULT_STENCIL_BUFFER_SIZE,
-        0
-    };
-    __multiSampling = params && params->samples > 0;
-
-    UINT numFormats;
-    if ( !wglChoosePixelFormatARB(hdc, attribList, NULL, 1, &pixelFormat, &numFormats) || numFormats == 0)
-    {
-        bool valid = false;
-        if (params && params->samples > 0)
-        {
-            GP_WARN("Failed to choose pixel format with WGL_SAMPLES_ARB == %d. Attempting to fallback to lower samples setting.", params->samples);
-            while (params->samples > 0)
-            {
-                params->samples /= 2;
-                attribList[1] = params->samples;
-                attribList[3] = params->samples > 0 ? 1 : 0;
-                if (wglChoosePixelFormatARB(hdc, attribList, NULL, 1, &pixelFormat, &numFormats) && numFormats > 0)
-                {
-                    valid = true;
-                    GP_WARN("Found pixel format with WGL_SAMPLES_ARB == %d.", params->samples);
-                    break;
-                }
-            }
-
-            __multiSampling = params->samples > 0;
-        }
-
-        if (!valid)
-        {
-            wglDeleteContext(tempContext);
-            DestroyWindow(hwnd);
-            GP_ERROR("Failed to choose a pixel format.");
-            return false;
-        }
-    }
-
-    // Create new/final window if needed
-    if (params)
-    {
-        DestroyWindow(hwnd);
-        hwnd = NULL;
-        hdc = NULL;
-
-        if (!createWindow(params, &__hwnd, &__hdc))
-        {
-            wglDeleteContext(tempContext);
-            return false;
-        }
-    }
-
-    // Set final pixel format for window
-    if (!SetPixelFormat(__hdc, pixelFormat, &pfd))
-    {
-        GP_ERROR("Failed to set the pixel format: %d.", (int)GetLastError());
-        return false;
-    }
-
-    // Create our new GL context
-    int attribs[] =
-    {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-        WGL_CONTEXT_MINOR_VERSION_ARB, 1,
-        0
-    };
-
-    if (!(__hrc = wglCreateContextAttribsARB(__hdc, 0, attribs) ) )
-    {
-        wglDeleteContext(tempContext);
-        GP_ERROR("Failed to create OpenGL context.");
-        return false;
-    }
-
-    // Delete the old/temporary context and window
-    wglDeleteContext(tempContext);
-
-    // Make the new context current
-    if (!wglMakeCurrent(__hdc, __hrc) || !__hrc)
-    {
-        GP_ERROR("Failed to make the window current.");
-        return false;
-    }
-    } else    // fallback to OpenGL 2.0 if wglChoosePixelFormatARB or wglCreateContextAttribsARB is NULL.
-    {
-        // Context is already here, just use it.
-        __hrc = tempContext;
-        __hwnd = hwnd;
-        __hdc = hdc;
-    }
-
-    // Vertical sync.
-    if (wglSwapIntervalEXT) 
-        wglSwapIntervalEXT(__vsync ? 1 : 0);
-    else 
-        __vsync = false;
-
-    // Some old graphics cards support EXT_framebuffer_object instead of ARB_framebuffer_object.
-    // Patch ARB_framebuffer_object functions to EXT_framebuffer_object ones since semantic is same.
-    if( !GLEW_ARB_framebuffer_object && GLEW_EXT_framebuffer_object )
-    {
-        glBindFramebuffer = glBindFramebufferEXT;
-        glBindRenderbuffer = glBindRenderbufferEXT;
-        glBlitFramebuffer = glBlitFramebufferEXT;
-        glCheckFramebufferStatus = glCheckFramebufferStatusEXT;
-        glDeleteFramebuffers = glDeleteFramebuffersEXT;
-        glDeleteRenderbuffers = glDeleteRenderbuffersEXT;
-        glFramebufferRenderbuffer = glFramebufferRenderbufferEXT;
-        glFramebufferTexture1D = glFramebufferTexture1DEXT;
-        glFramebufferTexture2D = glFramebufferTexture2DEXT;
-        glFramebufferTexture3D = glFramebufferTexture3DEXT;
-        glFramebufferTextureLayer = glFramebufferTextureLayerEXT;
-        glGenFramebuffers = glGenFramebuffersEXT;
-        glGenRenderbuffers = glGenRenderbuffersEXT;
-        glGenerateMipmap = glGenerateMipmapEXT;
-        glGetFramebufferAttachmentParameteriv = glGetFramebufferAttachmentParameterivEXT;
-        glGetRenderbufferParameteriv = glGetRenderbufferParameterivEXT;
-        glIsFramebuffer = glIsFramebufferEXT;
-        glIsRenderbuffer = glIsRenderbufferEXT;
-        glRenderbufferStorage = glRenderbufferStorageEXT;
-        glRenderbufferStorageMultisample = glRenderbufferStorageMultisampleEXT;
-    }
-
-    return true;
-}
-
 Platform* Platform::create(Game* game)
 {
     GP_ASSERT(game);
@@ -803,7 +607,7 @@ Platform* Platform::create(Game* game)
     Platform* platform = new Platform(game);
 
     // Get the application module handle.
-    __hinstance = ::GetModuleHandle(NULL);
+	gWindowInstance = ::GetModuleHandle(NULL);
 
     // Read window settings from config.
     WindowCreationParams params;
@@ -897,74 +701,116 @@ Platform* Platform::create(Game* game)
     }
 
 
-    // Register our window class.
-    WNDCLASSEX wc;
-    wc.cbSize = sizeof(WNDCLASSEX);
-    wc.style          = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    wc.lpfnWndProc    = (WNDPROC)__WndProc;
-    wc.cbClsExtra     = 0;
-    wc.cbWndExtra     = 0;
-    wc.hInstance      = __hinstance;
-    wc.hIcon          = LoadIcon(NULL, IDI_APPLICATION);
-    wc.hIconSm        = NULL;
-    wc.hCursor        = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground  = NULL;  // No brush - we are going to paint our own background
-    wc.lpszMenuName   = NULL;  // No default menu
-    wc.lpszClassName  = "gameplay";
+	bool fullscreen = false;
+	WNDCLASSEX wndClass;
 
-    if (!::RegisterClassEx(&wc))
-    {
-        GP_ERROR("Failed to register window class.");
-        goto error;
-    }
+	wndClass.cbSize = sizeof(WNDCLASSEX);
+	wndClass.style = CS_HREDRAW | CS_VREDRAW;
+	wndClass.lpfnWndProc = (WNDPROC)__WndProc;
+	wndClass.cbClsExtra = 0;
+	wndClass.cbWndExtra = 0;
+	wndClass.hInstance = gWindowInstance;
+	wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	wndClass.lpszMenuName = NULL;
+	wndClass.lpszClassName = "VkEngine";
+	wndClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);
 
-    if (params.fullscreen)
-    {
-        DEVMODE dm;
-        memset(&dm, 0, sizeof(dm));
-        dm.dmSize= sizeof(dm);
-        dm.dmPelsWidth  = width;
-        dm.dmPelsHeight = height;
-        dm.dmBitsPerPel = DEFAULT_COLOR_BUFFER_SIZE;
-        dm.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+	if (!RegisterClassEx(&wndClass))
+	{
+		std::cout << "Could not register window class!\n";
+		fflush(stdout);
+		return NULL;
+	}
 
-        // Try to set selected mode and get results. NOTE: CDS_FULLSCREEN gets rid of start bar.
-        if (ChangeDisplaySettings(&dm, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-        {
-            params.fullscreen = false;
-            GP_ERROR("Failed to start game in full-screen mode with resolution %dx%d.", width, height);
-            goto error;
-        }
-    }
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    if (!initializeGL(&params))
-        goto error;
+	if (fullscreen)
+	{
+		DEVMODE dmScreenSettings;
+		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
+		dmScreenSettings.dmPelsWidth = screenWidth;
+		dmScreenSettings.dmPelsHeight = screenHeight;
+		dmScreenSettings.dmBitsPerPel = 32;
+		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
-    // Show the window.
-    ShowWindow(__hwnd, SW_SHOW);
+		if ((width != screenWidth) && (height != screenHeight))
+		{
+			if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
+			{
+				if (MessageBox(NULL, "Fullscreen Mode not supported!\n Switch to window mode?", "Error", MB_YESNO | MB_ICONEXCLAMATION) == IDYES)
+				{
+					fullscreen = FALSE;
+				}
+				else
+				{
+					return FALSE;
+				}
+			}
+		}
 
-#ifdef GP_USE_GAMEPAD
-    // Initialize XInputGamepads.
-    for (DWORD i = 0; i < XUSER_MAX_COUNT; i++)
-    {
-        if (XInputGetState(i, &__xInputState) == NO_ERROR)
-        {
-            if (!__connectedXInput[i])
-            {
-                // Gamepad is connected.
-                Platform::gamepadEventConnectedInternal(i, XINPUT_BUTTON_COUNT, XINPUT_JOYSTICK_COUNT, XINPUT_TRIGGER_COUNT, "Microsoft XBox360 Controller");
-                __connectedXInput[i] = true;
-            }
-        }
-    }
-#endif
+	}
 
+	DWORD dwExStyle;
+	DWORD dwStyle;
+
+	if (fullscreen)
+	{
+		dwExStyle = WS_EX_APPWINDOW;
+		dwStyle = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+	}
+	else
+	{
+		dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+		dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+	}
+
+	RECT windowRect;
+	windowRect.left = 0L;
+	windowRect.top = 0L;
+	windowRect.right = fullscreen ? (long)screenWidth : (long)width;
+	windowRect.bottom = fullscreen ? (long)screenHeight : (long)height;
+
+	AdjustWindowRectEx(&windowRect, dwStyle, FALSE, dwExStyle);
+
+	gWindow = CreateWindowEx(0,
+		"VkEngine",
+		"VkEngine",
+		dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+		0,
+		0,
+		windowRect.right - windowRect.left,
+		windowRect.bottom - windowRect.top,
+		NULL,
+		NULL,
+		gWindowInstance,
+		NULL);
+
+	if (!fullscreen)
+	{
+		// Center on screen
+		uint32_t x = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right) / 2;
+		uint32_t y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom) / 2;
+		SetWindowPos(gWindow, 0, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+	}
+
+	if (!gWindow)
+	{
+		printf("Could not create window!\n");
+		fflush(stdout);
+		return 0;
+	}
+
+	ShowWindow(gWindow, SW_SHOW);
+	SetForegroundWindow(gWindow);
+	SetFocus(gWindow);
+	game->mWindow = gWindow;
+	game->mWindowInstance = gWindowInstance;
     return platform;
 
-error:
-
-    exit(0);
-    return NULL;
 }
 
 int Platform::enterMessagePump()
@@ -1044,14 +890,14 @@ bool Platform::canExit()
 unsigned int Platform::getDisplayWidth()
 {
     static RECT rect;
-    GetClientRect(__hwnd, &rect);
+    GetClientRect(gWindow, &rect);
     return rect.right;
 }
 
 unsigned int Platform::getDisplayHeight()
 {
     static RECT rect;
-    GetClientRect(__hwnd, &rect);
+    GetClientRect(gWindow, &rect);
     return rect.bottom;
 }
 

@@ -458,7 +458,7 @@ void Game::renderLoop()
 			if (!enableTextOverlay)
 			{
 				std::string windowTitle = getWindowTitle();
-				SetWindowText(window, windowTitle.c_str());
+				SetWindowText(mWindow, windowTitle.c_str());
 			}
 			lastFPS = roundf(1.0f / frameTimer);
 			updateTextOverlay();
@@ -644,7 +644,7 @@ void Game::renderLoop()
 			{
 				std::string windowTitle = getWindowTitle();
 				xcb_change_property(connection, XCB_PROP_MODE_REPLACE,
-					window, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
+					mWindow, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
 					windowTitle.size(), windowTitle.c_str());
 			}
 			lastFPS = frameCounter;
@@ -822,7 +822,7 @@ void Game::UnInitVulkanExample()
 #if defined(__ANDROID__)
 	// todo : android cleanup (if required)
 #else
-	xcb_destroy_window(connection, window);
+	xcb_destroy_window(connection, mWindow);
 	xcb_disconnect(connection);
 #endif
 #endif
@@ -933,7 +933,7 @@ void Game::setupConsole(std::string title)
 
 HWND Game::setupWindow(HINSTANCE hinstance, WNDPROC wndproc)
 {
-	this->windowInstance = hinstance;
+	this->mWindowInstance = hinstance;
 
 	bool fullscreen = false;
 	WNDCLASSEX wndClass;
@@ -1011,7 +1011,7 @@ HWND Game::setupWindow(HINSTANCE hinstance, WNDPROC wndproc)
 	AdjustWindowRectEx(&windowRect, dwStyle, FALSE, dwExStyle);
 
 	std::string windowTitle = getWindowTitle();
-	window = CreateWindowEx(0,
+	mWindow = CreateWindowEx(0,
 		name.c_str(),
 		windowTitle.c_str(),
 		dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
@@ -1029,21 +1029,21 @@ HWND Game::setupWindow(HINSTANCE hinstance, WNDPROC wndproc)
 		// Center on screen
 		uint32_t x = (GetSystemMetrics(SM_CXSCREEN) - windowRect.right) / 2;
 		uint32_t y = (GetSystemMetrics(SM_CYSCREEN) - windowRect.bottom) / 2;
-		SetWindowPos(window, 0, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		SetWindowPos(mWindow, 0, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	}
 
-	if (!window)
+	if (!mWindow)
 	{
 		printf("Could not create window!\n");
 		fflush(stdout);
 		return 0;
 	}
 
-	ShowWindow(window, SW_SHOW);
-	SetForegroundWindow(window);
-	SetFocus(window);
+	ShowWindow(mWindow, SW_SHOW);
+	SetForegroundWindow(mWindow);
+	SetFocus(mWindow);
 
-	return window;
+	return mWindow;
 }
 
 void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1056,7 +1056,7 @@ void Game::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_PAINT:
-		ValidateRect(window, NULL);
+		ValidateRect(mWindow, NULL);
 		break;
 	case WM_KEYDOWN:
 		switch (wParam)
@@ -1293,7 +1293,7 @@ xcb_window_t Game::setupWindow()
 {
 	uint32_t value_mask, value_list[32];
 
-	window = xcb_generate_id(connection);
+	mWindow = xcb_generate_id(connection);
 
 	value_mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
 	value_list[0] = screen->black_pixel;
@@ -1308,7 +1308,7 @@ xcb_window_t Game::setupWindow()
 
 	xcb_create_window(connection,
 		XCB_COPY_FROM_PARENT,
-		window, screen->root,
+		mWindow, screen->root,
 		0, 0, width, height, 0,
 		XCB_WINDOW_CLASS_INPUT_OUTPUT,
 		screen->root_visual,
@@ -1322,19 +1322,19 @@ xcb_window_t Game::setupWindow()
 	atom_wm_delete_window = xcb_intern_atom_reply(connection, cookie2, 0);
 
 	xcb_change_property(connection, XCB_PROP_MODE_REPLACE,
-		window, (*reply).atom, 4, 32, 1,
+		mWindow, (*reply).atom, 4, 32, 1,
 		&(*atom_wm_delete_window).atom);
 
 	std::string windowTitle = getWindowTitle();
 	xcb_change_property(connection, XCB_PROP_MODE_REPLACE,
-		window, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
+		mWindow, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
 		title.size(), windowTitle.c_str());
 
 	free(reply);
 
-	xcb_map_window(connection, window);
+	xcb_map_window(connection, mWindow);
 
-	return(window);
+	return(mWindow);
 }
 
 // Initialize XCB connection
@@ -1730,13 +1730,13 @@ void Game::windowResized()
 void Game::initSwapchain()
 {
 #if defined(_WIN32)
-	mSwapChain.initSurface(windowInstance, window);
+	mSwapChain.initSurface(mWindowInstance, mWindow);
 #elif defined(__ANDROID__)	
 	mSwapChain.initSurface(androidApp->window);
 #elif defined(_DIRECT2DISPLAY)
 	mSwapChain.initSurface(width, height);
 #elif defined(__linux__)
-	mSwapChain.initSurface(connection, window);
+	mSwapChain.initSurface(connection, mWindow);
 #endif
 }
 

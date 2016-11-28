@@ -2,7 +2,6 @@
 #ifdef WIN32
 
 #include "gameplay.h"
-#include "VulkanExample.h"
 
 using namespace vk;
 
@@ -29,28 +28,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 extern "C" int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int cmdShow)
 {
 	Game* game = Game::getInstance();
-	game->InitVulkanExample(true);
-	game->setupWindow(hInstance, WndProc);
+	//game->setupWindow(hInstance, WndProc);
+	Platform* platform = Platform::create(game);
+	game->InitVulkanExample(true);	
 	game->initSwapchain();
 	game->prepare();
 	game->renderLoop();
 	game->UnInitVulkanExample();
+	delete platform;
 	return 0;
 }
 
 
-///**
-// * Main entry point.
-// */
-//extern "C" int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int cmdShow)
-//{
-//	Game* game = Game::getInstance();
-//	Platform* platform = Platform::create(game);
-//	GP_ASSERT(platform);
-//	int result = platform->enterMessagePump();
-//	delete platform;
-//	return result;
-//}
+/**
+ * Main entry point.
+ */
+extern "C" int APIENTRY WinMainTest(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR cmdLine, int cmdShow)
+{
+	Game* game = Game::getInstance();
+	Platform* platform = Platform::create(game);
+	GP_ASSERT(platform);
+	int result = platform->enterMessagePump();
+	delete platform;
+	return result;
+}
 
 #endif
 #endif
