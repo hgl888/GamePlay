@@ -1,50 +1,50 @@
 #include "Base.h"
-#include "Rectangle.h"
+#include "VkRectangle.h"
 
 namespace vk
 {
 
-Rectangle::Rectangle()
+VkRectangle::VkRectangle()
     : x(0), y(0), width(0), height(0)
 {
 }
 
-Rectangle::Rectangle(float width, float height) :
+VkRectangle::VkRectangle(float width, float height) :
     x(0), y(0), width(width), height(height)
 {
 }
 
-Rectangle::Rectangle(float x, float y, float width, float height) :
+VkRectangle::VkRectangle(float x, float y, float width, float height) :
     x(x), y(y), width(width), height(height)
 {
 }
 
-Rectangle::Rectangle(const Rectangle& copy)
+VkRectangle::VkRectangle(const VkRectangle& copy)
 {
     set(copy);
 }
 
-Rectangle::~Rectangle()
+VkRectangle::~VkRectangle()
 {
 }
 
-const Rectangle& Rectangle::empty()
+const VkRectangle& VkRectangle::empty()
 {
-    static Rectangle empty;
+    static VkRectangle empty;
     return empty;
 }
 
-bool Rectangle::isEmpty() const
+bool VkRectangle::isEmpty() const
 {
     return (x == 0 && y == 0 && width == 0 && height == 0);
 }
 
-void Rectangle::set(const Rectangle& r)
+void VkRectangle::set(const VkRectangle& r)
 {
     set(r.x, r.y, r.width, r.height);
 }
 
-void Rectangle::set(float x, float y, float width, float height)
+void VkRectangle::set(float x, float y, float width, float height)
 {
     this->x = x;
     this->y = y;
@@ -52,48 +52,48 @@ void Rectangle::set(float x, float y, float width, float height)
     this->height = height;
 }
 
-void Rectangle::setPosition(float x, float y)
+void VkRectangle::setPosition(float x, float y)
 {
     this->x = x;
     this->y = y;
 }
 
-float Rectangle::left() const
+float VkRectangle::left() const
 {
     return x;
 }
 
-float Rectangle::top() const
+float VkRectangle::top() const
 {
     return y;
 }
 
-float Rectangle::right() const
+float VkRectangle::right() const
 {
     return x + width;
 }
 
-float Rectangle::bottom() const
+float VkRectangle::bottom() const
 {
     return y + height;
 }
 
-bool Rectangle::contains(float x, float y) const
+bool VkRectangle::contains(float x, float y) const
 {
     return (x >= this->x && x <= (this->x + width) && y >= this->y && y <= (this->y + height));
 }
 
-bool Rectangle::contains(float x, float y, float width, float height) const
+bool VkRectangle::contains(float x, float y, float width, float height) const
 {
     return (contains(x, y) && contains(x + width, y + height));
 }
 
-bool Rectangle::contains(const Rectangle& r) const
+bool VkRectangle::contains(const VkRectangle& r) const
 {
     return contains(r.x, r.y, r.width, r.height);
 }
 
-bool Rectangle::intersects(float x, float y, float width, float height) const
+bool VkRectangle::intersects(float x, float y, float width, float height) const
 {
     float t;
     if ((t = x - this->x) > this->width || -t > width)
@@ -103,12 +103,12 @@ bool Rectangle::intersects(float x, float y, float width, float height) const
     return true;
 }
 
-bool Rectangle::intersects(const Rectangle& r) const
+bool VkRectangle::intersects(const VkRectangle& r) const
 {
     return intersects(r.x, r.y, r.width, r.height);
 }
 
-bool Rectangle::intersect(const Rectangle& r1, const Rectangle& r2, Rectangle* dst)
+bool VkRectangle::intersect(const VkRectangle& r1, const VkRectangle& r2, VkRectangle* dst)
 {
     GP_ASSERT(dst);
 
@@ -129,7 +129,7 @@ bool Rectangle::intersect(const Rectangle& r1, const Rectangle& r2, Rectangle* d
     return false;
 }
 
-void Rectangle::combine(const Rectangle& r1, const Rectangle& r2, Rectangle* dst)
+void VkRectangle::combine(const VkRectangle& r1, const VkRectangle& r2, VkRectangle* dst)
 {
     GP_ASSERT(dst);
 
@@ -139,7 +139,7 @@ void Rectangle::combine(const Rectangle& r1, const Rectangle& r2, Rectangle* dst
     dst->height = max(r1.y + r1.height, r2.y + r2.height) - dst->y;
 }
 
-void Rectangle::inflate(float horizontalAmount, float verticalAmount)
+void VkRectangle::inflate(float horizontalAmount, float verticalAmount)
 {
     x -= horizontalAmount;
     y -= verticalAmount;
@@ -147,7 +147,7 @@ void Rectangle::inflate(float horizontalAmount, float verticalAmount)
     height += verticalAmount * 2;
 }
 
-Rectangle& Rectangle::operator = (const Rectangle& r)
+VkRectangle& VkRectangle::operator = (const VkRectangle& r)
 {
     x = r.x;
     y = r.y;
@@ -156,12 +156,12 @@ Rectangle& Rectangle::operator = (const Rectangle& r)
     return *this;
 }
 
-bool Rectangle::operator == (const Rectangle& r) const
+bool VkRectangle::operator == (const VkRectangle& r) const
 {
     return (x == r.x && width == r.width && y == r.y && height == r.height);
 }
 
-bool Rectangle::operator != (const Rectangle& r) const
+bool VkRectangle::operator != (const VkRectangle& r) const
 {
     return (x != r.x || width != r.width || y != r.y || height != r.height);
 }

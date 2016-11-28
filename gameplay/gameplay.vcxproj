@@ -99,7 +99,7 @@
     <ClCompile Include="src\Quaternion.cpp" />
     <ClCompile Include="src\RadioButton.cpp" />
     <ClCompile Include="src\Ray.cpp" />
-    <ClCompile Include="src\Rectangle.cpp" />
+    <ClCompile Include="src\VkRectangle.cpp" />
     <ClCompile Include="src\Ref.cpp" />
     <ClCompile Include="src\RenderState.cpp" />
     <ClCompile Include="src\RenderTarget.cpp" />
@@ -217,7 +217,7 @@
     <ClInclude Include="src\Quaternion.h" />
     <ClInclude Include="src\RadioButton.h" />
     <ClInclude Include="src\Ray.h" />
-    <ClInclude Include="src\Rectangle.h" />
+    <ClInclude Include="src\VkRectangle.h" />
     <ClInclude Include="src\Ref.h" />
     <ClInclude Include="src\RenderState.h" />
     <ClInclude Include="src\RenderTarget.h" />
@@ -249,7 +249,7 @@
     <ClInclude Include="src\VertexAttributeBinding.h" />
     <ClInclude Include="src\VertexFormat.h" />
     <ClInclude Include="src\VerticalLayout.h" />
-    <ClInclude Include="vk\camera.hpp" />
+    <ClInclude Include="vk\vkcamera.hpp" />
     <ClInclude Include="vk\frustum.hpp" />
     <ClInclude Include="vk\keycodes.hpp" />
     <ClInclude Include="vk\threadpool.hpp" />

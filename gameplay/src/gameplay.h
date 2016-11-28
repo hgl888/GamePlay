@@ -13,7 +13,7 @@
 #include "Logger.h"
 
 // Math
-#include "Rectangle.h"
+#include "VkRectangle.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"

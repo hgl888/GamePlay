@@ -27,6 +27,7 @@ CharacterGame::CharacterGame()
     _buttonPressed = new bool[2];
 }
 
+
 void CharacterGame::initialize()
 {
     // Enable multi-touch (only affects devices that support multi-touch).

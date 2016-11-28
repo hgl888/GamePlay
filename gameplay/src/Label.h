@@ -117,7 +117,7 @@ protected:
     /**
      * @see Control::drawText
      */
-    virtual unsigned int drawText(Form* form, const Rectangle& clip);
+    virtual unsigned int drawText(Form* form, const VkRectangle& clip);
 
     /**
      * The text displayed by this label.
@@ -137,7 +137,7 @@ protected:
     /**
      * The position and size of this control's text area, before clipping.  Used for text alignment.
      */
-    Rectangle _textBounds;
+    VkRectangle _textBounds;
 
 private:
 

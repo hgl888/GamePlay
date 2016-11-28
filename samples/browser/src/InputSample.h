@@ -61,8 +61,8 @@ private:
     int _mouseWheel;
     bool _keyboardState;
     SpriteBatch* _crosshair;
-    Rectangle _crosshairDstRect;
-    Rectangle _crosshairSrcRect;
+	VkRectangle _crosshairDstRect;
+	VkRectangle _crosshairSrcRect;
     Vector2 _crosshairLowerLimit;
     Vector2 _crosshairUpperLimit;
     Scene* _scene;

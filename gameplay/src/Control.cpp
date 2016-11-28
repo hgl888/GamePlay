@@ -402,12 +402,12 @@ void Control::setSize(float width, float height)
     setHeight(height);
 }
 
-const Rectangle& Control::getBounds() const
+const VkRectangle& Control::getBounds() const
 {
     return _bounds;
 }
 
-void Control::setBounds(const Rectangle& bounds)
+void Control::setBounds(const VkRectangle& bounds)
 {
     setX(bounds.x);
     setY(bounds.y);
@@ -415,17 +415,17 @@ void Control::setBounds(const Rectangle& bounds)
     setHeight(bounds.height);
 }
 
-const Rectangle& Control::getAbsoluteBounds() const
+const VkRectangle& Control::getAbsoluteBounds() const
 {
     return _absoluteBounds;
 }
 
-const Rectangle& Control::getClipBounds() const
+const VkRectangle& Control::getClipBounds() const
 {
     return _clipBounds;
 }
 
-const Rectangle& Control::getClip() const
+const VkRectangle& Control::getClip() const
 {
     return _viewportClipBounds;
 }
@@ -590,7 +590,7 @@ const Theme::Border& Control::getBorder(State state) const
     return overlay->getBorder();
 }
 
-void Control::setSkinRegion(const Rectangle& region, unsigned char states)
+void Control::setSkinRegion(const VkRectangle& region, unsigned char states)
 {
     overrideStyle();
     Theme::Style::Overlay* overlays[Theme::Style::OVERLAY_MAX] = { 0 };
@@ -603,7 +603,7 @@ void Control::setSkinRegion(const Rectangle& region, unsigned char states)
     }
 }
 
-const Rectangle& Control::getSkinRegion(State state) const
+const VkRectangle& Control::getSkinRegion(State state) const
 {
     Theme::Style::Overlay* overlay = getOverlay(state);
     GP_ASSERT(overlay);
@@ -658,7 +658,7 @@ const Theme::Padding& Control::getPadding() const
     return _style->getPadding();
 }
 
-void Control::setImageRegion(const char* id, const Rectangle& region, unsigned char states)
+void Control::setImageRegion(const char* id, const VkRectangle& region, unsigned char states)
 {
     overrideStyle();
     Theme::Style::Overlay* overlays[Theme::Style::OVERLAY_MAX] = { 0 };
@@ -671,7 +671,7 @@ void Control::setImageRegion(const char* id, const Rectangle& region, unsigned c
     }
 }
 
-const Rectangle& Control::getImageRegion(const char* id, State state) const
+const VkRectangle& Control::getImageRegion(const char* id, State state) const
 {
     Theme::Style::Overlay* overlay = getOverlay(state);
     GP_ASSERT(overlay);
@@ -705,7 +705,7 @@ const Theme::UVs& Control::getImageUVs(const char* id, State state) const
     return overlay->getImageUVs(id);
 }
 
-void Control::setCursorRegion(const Rectangle& region, unsigned char states)
+void Control::setCursorRegion(const VkRectangle& region, unsigned char states)
 {
     overrideStyle();
     Theme::Style::Overlay* overlays[Theme::Style::OVERLAY_MAX] = { 0 };
@@ -718,7 +718,7 @@ void Control::setCursorRegion(const Rectangle& region, unsigned char states)
     }
 }
 
-const Rectangle& Control::getCursorRegion(State state) const
+const VkRectangle& Control::getCursorRegion(State state) const
 {
     Theme::Style::Overlay* overlay = getOverlay(state);
     GP_ASSERT(overlay);
@@ -1144,10 +1144,10 @@ bool Control::updateBoundsInternal(const Vector2& offset)
     if (dirtyBounds)
     {
         // Store old bounds so we can determine if they change
-        Rectangle oldAbsoluteBounds(_absoluteBounds);
-        Rectangle oldAbsoluteClipBounds(_absoluteClipBounds);
-        Rectangle oldViewportBounds(_viewportBounds);
-        Rectangle oldViewportClipBounds(_viewportClipBounds);
+        VkRectangle oldAbsoluteBounds(_absoluteBounds);
+        VkRectangle oldAbsoluteClipBounds(_absoluteClipBounds);
+        VkRectangle oldViewportBounds(_viewportBounds);
+        VkRectangle oldViewportClipBounds(_viewportClipBounds);
 
         updateBounds();
         updateAbsoluteBounds(offset);
@@ -1170,7 +1170,7 @@ void Control::updateBounds()
 {
     Game* game = Game::getInstance();
 
-    const Rectangle parentAbsoluteBounds = _parent ? _parent->_viewportBounds : Rectangle(0, 0, game->getViewport().width, game->getViewport().height);
+    const VkRectangle parentAbsoluteBounds = _parent ? _parent->_viewportBounds : VkRectangle(0, 0, game->getViewport().width, game->getViewport().height);
 
     const Theme::Margin& margin = _style->getMargin();
 
@@ -1189,15 +1189,15 @@ void Control::updateBounds()
     if (_alignment != Control::ALIGN_TOP_LEFT)
     {
         const Theme::Margin& margin = _style->getMargin();
-        const Rectangle& parentBounds = _parent ? _parent->getBounds() : Rectangle(0, 0, game->getViewport().width, game->getViewport().height);
+        const VkRectangle& parentBounds = _parent ? _parent->getBounds() : VkRectangle(0, 0, game->getViewport().width, game->getViewport().height);
         const Theme::Border& parentBorder = _parent ? _parent->getBorder(_parent->getState()) : Theme::Border::empty();
         const Theme::Padding& parentPadding = _parent ? _parent->getPadding() : Theme::Padding::empty();
 
         float clipWidth, clipHeight;
         if (_parent && (_parent->getScroll() != Container::SCROLL_NONE))
         {
-            const Rectangle& verticalScrollBarBounds = _parent->getImageRegion("verticalScrollBar", _parent->getState());
-            const Rectangle& horizontalScrollBarBounds = _parent->getImageRegion("horizontalScrollBar", _parent->getState());
+            const VkRectangle& verticalScrollBarBounds = _parent->getImageRegion("verticalScrollBar", _parent->getState());
+            const VkRectangle& horizontalScrollBarBounds = _parent->getImageRegion("horizontalScrollBar", _parent->getState());
             clipWidth = parentBounds.width - parentBorder.left - parentBorder.right - parentPadding.left - parentPadding.right - verticalScrollBarBounds.width;
             clipHeight = parentBounds.height - parentBorder.top - parentBorder.bottom - parentPadding.top - parentPadding.bottom - horizontalScrollBarBounds.height;
         }
@@ -1241,8 +1241,8 @@ void Control::updateAbsoluteBounds(const Vector2& offset)
 {
     Game* game = Game::getInstance();
 
-    const Rectangle parentAbsoluteBounds = _parent ? _parent->_viewportBounds : Rectangle(0, 0, game->getViewport().width, game->getViewport().height);
-    const Rectangle parentAbsoluteClip = _parent ? _parent->_viewportClipBounds : parentAbsoluteBounds;
+    const VkRectangle parentAbsoluteBounds = _parent ? _parent->_viewportBounds : VkRectangle(0, 0, game->getViewport().width, game->getViewport().height);
+    const VkRectangle parentAbsoluteClip = _parent ? _parent->_viewportClipBounds : parentAbsoluteBounds;
 
     // Compute content area padding values
     const Theme::Border& border = getBorder(NORMAL);
@@ -1262,7 +1262,7 @@ void Control::updateAbsoluteBounds(const Vector2& offset)
         _bounds.height);
 
     // Calculate absolute clipped bounds
-    Rectangle::intersect(_absoluteBounds, parentAbsoluteClip, &_absoluteClipBounds);
+    VkRectangle::intersect(_absoluteBounds, parentAbsoluteClip, &_absoluteClipBounds);
 
     // Calculate the local clipped bounds
     _clipBounds.set(
@@ -1280,7 +1280,7 @@ void Control::updateAbsoluteBounds(const Vector2& offset)
         _absoluteBounds.height - vpadding);
 
     // Calculate the absolute clipped viewport bounds
-    Rectangle::intersect(_viewportBounds, parentAbsoluteClip, &_viewportClipBounds);
+    VkRectangle::intersect(_viewportBounds, parentAbsoluteClip, &_viewportClipBounds);
 }
 
 void Control::startBatch(Form* form, SpriteBatch* batch)
@@ -1293,7 +1293,7 @@ void Control::finishBatch(Form* form, SpriteBatch* batch)
     form->finishBatch(batch);
 }
 
-unsigned int Control::draw(Form* form, const Rectangle& clip)
+unsigned int Control::draw(Form* form, const VkRectangle& clip)
 {
     if (!_visible)
         return 0;
@@ -1304,7 +1304,7 @@ unsigned int Control::draw(Form* form, const Rectangle& clip)
     return drawCalls;
 }
 
-unsigned int Control::drawBorder(Form* form, const Rectangle& clip)
+unsigned int Control::drawBorder(Form* form, const VkRectangle& clip)
 {
     if (!form || !_skin || _absoluteBounds.width <= 0 || _absoluteBounds.height <= 0)
         return 0;
@@ -1400,12 +1400,12 @@ unsigned int Control::drawBorder(Form* form, const Rectangle& clip)
     return drawCalls;
 }
 
-unsigned int Control::drawImages(Form* form, const Rectangle& position)
+unsigned int Control::drawImages(Form* form, const VkRectangle& position)
 {
     return 0;
 }
 
-unsigned int Control::drawText(Form* form, const Rectangle& position)
+unsigned int Control::drawText(Form* form, const VkRectangle& position)
 {
     return 0;
 }

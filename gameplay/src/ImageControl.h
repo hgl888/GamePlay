@@ -5,7 +5,7 @@
 #include "Theme.h"
 #include "Image.h"
 #include "SpriteBatch.h"
-#include "Rectangle.h"
+#include "VkRectangle.h"
 
 namespace vk
 {
@@ -69,14 +69,14 @@ public:
      *
      * @param region The new source region.
      */
-    void setRegionSrc(const Rectangle& region);
+    void setRegionSrc(const VkRectangle& region);
 
     /**
      * Get the source region of this ImageControl.
      *
      * @return The source region of this ImageControl.
      */
-    const Rectangle& getRegionSrc() const;
+    const VkRectangle& getRegionSrc() const;
 
     /**
      * Sets the destination region of this ImageControl.  This is the region
@@ -95,14 +95,14 @@ public:
      *
      * @param region The new destination region.
      */
-    void setRegionDst(const Rectangle& region);
+    void setRegionDst(const VkRectangle& region);
 
     /**
      * Get the destination region of this ImageControl.
      *
      * @return The destination region of this ImageControl.
      */
-    const Rectangle& getRegionDst() const;
+    const VkRectangle& getRegionDst() const;
 
 protected:
 
@@ -127,7 +127,7 @@ protected:
     /**
      * @see Control::drawImages
      */
-    unsigned int drawImages(Form* form, const Rectangle& clip);
+    unsigned int drawImages(Form* form, const VkRectangle& clip);
 
     /**
      * @see Control::updateBounds
@@ -139,9 +139,9 @@ private:
     ImageControl(const ImageControl& copy);
 
     // Source region.
-    Rectangle _srcRegion;
+    VkRectangle _srcRegion;
     // Destination region.
-    Rectangle _dstRegion;
+    VkRectangle _dstRegion;
     SpriteBatch* _batch;
 
     // One over texture width and height, for use when calculating UVs from a new source region.

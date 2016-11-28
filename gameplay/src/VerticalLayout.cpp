@@ -75,7 +75,7 @@ void VerticalLayout::update(const Container* container)
 
         if (control->isVisible())
         {
-            const Rectangle& bounds = control->getBounds();
+            const VkRectangle& bounds = control->getBounds();
             const Theme::Margin& margin = control->getMargin();
 
             yPosition += margin.top;

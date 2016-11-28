@@ -33,9 +33,6 @@
     <ClCompile Include="src\Ray.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Rectangle.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Ref.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -372,6 +369,9 @@
     <ClCompile Include="vk\vulkantools.cpp">
       <Filter>vk</Filter>
     </ClCompile>
+    <ClCompile Include="src\VkRectangle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Plane.h">
@@ -384,9 +384,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Ray.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rectangle.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Ref.h">
@@ -719,9 +716,6 @@
     <ClInclude Include="src\Drawable.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="vk\camera.hpp">
-      <Filter>vk</Filter>
-    </ClInclude>
     <ClInclude Include="vk\frustum.hpp">
       <Filter>vk</Filter>
     </ClInclude>
@@ -772,6 +766,12 @@
     </ClInclude>
     <ClInclude Include="vk\VulkanExample.h">
       <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="vk\vkcamera.hpp">
+      <Filter>vk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VkRectangle.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

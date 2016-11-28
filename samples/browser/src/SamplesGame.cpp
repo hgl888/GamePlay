@@ -118,7 +118,7 @@ void SamplesGame::render(float elapsedTime)
 
 void SamplesGame::resizeEvent(unsigned int width, unsigned int height)
 {
-    setViewport(vk::Rectangle(width, height));
+    setViewport(VkRectangle(width, height));
 }
 
 void SamplesGame::touchEvent(Touch::TouchEvent evt, int x, int y, unsigned int contactIndex)

@@ -2,7 +2,7 @@
 #define CONTROL_H_
 
 #include "Ref.h"
-#include "Rectangle.h"
+#include "VkRectangle.h"
 #include "Vector2.h"
 #include "Theme.h"
 #include "ThemeStyle.h"
@@ -396,7 +396,7 @@ public:
      *
      * @return The bounds of this control.
      */
-    const Rectangle& getBounds() const;
+    const VkRectangle& getBounds() const;
 
     /**
      * Set the bounds of this control, relative to its parent container and including its
@@ -410,7 +410,7 @@ public:
      *
      * @param bounds The new bounds to set.
      */
-    void setBounds(const Rectangle& bounds);
+    void setBounds(const VkRectangle& bounds);
 
     /**
      * Get the absolute bounds of this control, in pixels, including border and padding,
@@ -423,21 +423,21 @@ public:
      *
      * @return The absolute bounds of this control.
      */
-    const Rectangle& getAbsoluteBounds() const;
+    const VkRectangle& getAbsoluteBounds() const;
 
     /**
      * Get the bounds of this control, relative to its parent container, after clipping.
      *
      * @return The bounds of this control.
      */
-    const Rectangle& getClipBounds() const;
+    const VkRectangle& getClipBounds() const;
 
     /**
      * Get the content area of this control, in screen coordinates, after clipping.
      *
      * @return The clipping area of this control.
      */
-    const Rectangle& getClip() const;
+    const VkRectangle& getClip() const;
 
     /**
      * Returns the auto sizing mode for this control.
@@ -493,7 +493,7 @@ public:
      * @param states The states to set this property on.
      *               One or more members of the Control::State enum, ORed together.
      */
-    void setSkinRegion(const Rectangle& region, unsigned char states = STATE_ALL);
+    void setSkinRegion(const VkRectangle& region, unsigned char states = STATE_ALL);
 
     /**
      * Get the texture region of this control's skin for a given state.
@@ -502,7 +502,7 @@ public:
      *
      * @return The texture region of this control's skin.
      */
-    const Rectangle& getSkinRegion(State state = NORMAL) const;
+    const VkRectangle& getSkinRegion(State state = NORMAL) const;
 
     /**
      * Set the blend color of this control's skin.
@@ -564,7 +564,7 @@ public:
      * @param states The states to set this property on.
      *               One or more members of the Control::State enum, ORed together.
      */
-    void setImageRegion(const char* id, const Rectangle& region, unsigned char states = STATE_ALL);
+    void setImageRegion(const char* id, const VkRectangle& region, unsigned char states = STATE_ALL);
 
     /**
      * Get the texture region of an image used by this control for a given state.
@@ -574,7 +574,7 @@ public:
      *
      * @return The texture region of the specified image.
      */
-    const Rectangle& getImageRegion(const char* id, State state) const;
+    const VkRectangle& getImageRegion(const char* id, State state) const;
 
     /**
      * Set the blend color of an image used by this control.
@@ -613,7 +613,7 @@ public:
      * @param states The states to set this property on.
      *               One or more members of the Control::State enum, ORed together.
      */
-    void setCursorRegion(const Rectangle& region, unsigned char states);
+    void setCursorRegion(const VkRectangle& region, unsigned char states);
 
     /**
      * Get the texture region of this control's cursor for a given state.
@@ -622,7 +622,7 @@ public:
      *
      * @return The texture region of this control's cursor.
      */
-    const Rectangle& getCursorRegion(State state) const;
+    const VkRectangle& getCursorRegion(State state) const;
 
     /**
      * Set the blend color of this control's cursor.
@@ -1219,7 +1219,7 @@ protected:
      *
      * @return The number of draw calls issued.
      */
-    virtual unsigned int draw(Form* form, const Rectangle& clip);
+    virtual unsigned int draw(Form* form, const VkRectangle& clip);
 
     /**
      * Draws the themed border and background of a control.
@@ -1234,7 +1234,7 @@ protected:
      *
      * @return The number of draw calls issued.
      */
-    virtual unsigned int drawBorder(Form* form, const Rectangle& clip);
+    virtual unsigned int drawBorder(Form* form, const VkRectangle& clip);
 
     /**
      * Draw the images associated with this control.
@@ -1249,7 +1249,7 @@ protected:
      *
      * @return The number of draw calls issued.
      */
-    virtual unsigned int drawImages(Form* form, const Rectangle& clip);
+    virtual unsigned int drawImages(Form* form, const VkRectangle& clip);
 
     /**
      * Draw this control's text.
@@ -1264,7 +1264,7 @@ protected:
      *
      * @return The number of draw calls issued.
      */
-    virtual unsigned int drawText(Form* form, const Rectangle& clip);
+    virtual unsigned int drawText(Form* form, const VkRectangle& clip);
 
     /**
      * Initializes the control.
@@ -1369,37 +1369,37 @@ protected:
     /**
      * Local bounds, relative to parent container's clipping window, possibly stored as percentages (see _boundsBits).
      */
-    Rectangle _relativeBounds;
+    VkRectangle _relativeBounds;
 
     /**
      * Local bounds, relative to parent container's clipping window, and desired size.
      */
-    Rectangle _bounds;
+    VkRectangle _bounds;
 
     /**
      * Local bounds, relative to parent container's clipping window, including border and padding, after clipping.
      */
-    Rectangle _clipBounds;
+    VkRectangle _clipBounds;
 
     /**
      * Absolute bounds, including border and padding, before clipping.
      */
-    Rectangle _absoluteBounds;
+    VkRectangle _absoluteBounds;
 
     /**
      * Absolute bounds, including border and padding, after clipping.
      */
-    Rectangle _absoluteClipBounds;
+    VkRectangle _absoluteClipBounds;
 
     /**
      * Absolute bounds of content area (i.e. without border and padding), before clipping.
      */
-    Rectangle _viewportBounds;
+    VkRectangle _viewportBounds;
 
     /**
      * Absolute bounds of content area (i.e. without border and padding), after clipping.
      */
-    Rectangle _viewportClipBounds;
+    VkRectangle _viewportClipBounds;
 
     /**
      * Control dirty bits.

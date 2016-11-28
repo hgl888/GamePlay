@@ -1,10 +1,9 @@
 #include "vulkanexamplebase.h"
 
-std::vector<const char*> VulkanExampleBase::args;
 
 VkResult VulkanExampleBase::createInstance(bool enableValidation)
 {
-	this->enableValidation = enableValidation;
+	this->mEnableValidation = enableValidation;
 
 	VkApplicationInfo appInfo = {};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -356,9 +355,9 @@ void VulkanExampleBase::renderLoop()
 	while (TRUE)
 	{
 		auto tStart = std::chrono::high_resolution_clock::now();
-		if (viewUpdated)
+		if (mViewUpdated)
 		{
-			viewUpdated = false;
+			mViewUpdated = false;
 			viewChanged();
 		}
 
@@ -381,7 +380,7 @@ void VulkanExampleBase::renderLoop()
 		camera.update(frameTimer);
 		if (camera.moving())
 		{
-			viewUpdated = true;
+			mViewUpdated = true;
 		}
 		// Convert to clamped timer value
 		if (!paused)
@@ -392,8 +391,8 @@ void VulkanExampleBase::renderLoop()
 				timer -= 1.0f;
 			}
 		}
-		fpsTimer += (float)tDiff;
-		if (fpsTimer > 1000.0f)
+		mFpsTimer += (float)tDiff;
+		if (mFpsTimer > 1000.0f)
 		{
 			if (!enableTextOverlay)
 			{
@@ -402,7 +401,7 @@ void VulkanExampleBase::renderLoop()
 			}
 			lastFPS = roundf(1.0f / frameTimer);
 			updateTextOverlay();
-			fpsTimer = 0.0f;
+			mFpsTimer = 0.0f;
 			frameCounter = 0;
 		}
 	}
@@ -456,12 +455,12 @@ void VulkanExampleBase::renderLoop()
 					timer -= 1.0f;
 				}
 			}
-			fpsTimer += (float)tDiff;
-			if (fpsTimer > 1000.0f)
+			mFpsTimer += (float)tDiff;
+			if (mFpsTimer > 1000.0f)
 			{
 				lastFPS = frameCounter;
 				updateTextOverlay();
-				fpsTimer = 0.0f;
+				mFpsTimer = 0.0f;
 				frameCounter = 0;
 			}
 			// Check gamepad state
@@ -469,7 +468,7 @@ void VulkanExampleBase::renderLoop()
 			// todo : check if gamepad is present
 			// todo : time based and relative axis positions
 			bool updateView = false;
-			if (camera.type != Camera::CameraType::firstperson)
+			if (camera.type != VkCamera::CameraType::firstperson)
 			{
 				// Rotate
 				if (std::abs(gamePadState.axisLeft.x) > deadZone)
@@ -509,9 +508,9 @@ void VulkanExampleBase::renderLoop()
 	while (!quit)
 	{
 		auto tStart = std::chrono::high_resolution_clock::now();
-		if (viewUpdated)
+		if (mViewUpdated)
 		{
-			viewUpdated = false;
+			mViewUpdated = false;
 			viewChanged();
 		}
 		render();
@@ -522,7 +521,7 @@ void VulkanExampleBase::renderLoop()
 		camera.update(frameTimer);
 		if (camera.moving())
 		{
-			viewUpdated = true;
+			mViewUpdated = true;
 		}
 		// Convert to clamped timer value
 		if (!paused)
@@ -533,12 +532,12 @@ void VulkanExampleBase::renderLoop()
 				timer -= 1.0f;
 			}
 		}
-		fpsTimer += (float)tDiff;
-		if (fpsTimer > 1000.0f)
+		mFpsTimer += (float)tDiff;
+		if (mFpsTimer > 1000.0f)
 		{
 			lastFPS = frameCounter;
 			updateTextOverlay();
-			fpsTimer = 0.0f;
+			mFpsTimer = 0.0f;
 			frameCounter = 0;
 		}
 	}
@@ -547,9 +546,9 @@ void VulkanExampleBase::renderLoop()
 	while (!quit)
 	{
 		auto tStart = std::chrono::high_resolution_clock::now();
-		if (viewUpdated)
+		if (mViewUpdated)
 		{
-			viewUpdated = false;
+			mViewUpdated = false;
 			viewChanged();
 		}
 		xcb_generic_event_t *event;
@@ -566,7 +565,7 @@ void VulkanExampleBase::renderLoop()
 		camera.update(frameTimer);
 		if (camera.moving())
 		{
-			viewUpdated = true;
+			mViewUpdated = true;
 		}
 		// Convert to clamped timer value
 		if (!paused)
@@ -577,8 +576,8 @@ void VulkanExampleBase::renderLoop()
 				timer -= 1.0f;
 			}
 		}
-		fpsTimer += (float)tDiff;
-		if (fpsTimer > 1000.0f)
+		mFpsTimer += (float)tDiff;
+		if (mFpsTimer > 1000.0f)
 		{
 			if (!enableTextOverlay)
 			{
@@ -589,7 +588,7 @@ void VulkanExampleBase::renderLoop()
 			}
 			lastFPS = frameCounter;
 			updateTextOverlay();
-			fpsTimer = 0.0f;
+			mFpsTimer = 0.0f;
 			frameCounter = 0;
 		}
 	}
@@ -626,7 +625,7 @@ void VulkanExampleBase::getOverlayText(VulkanTextOverlay *textOverlay)
 void VulkanExampleBase::prepareFrame()
 {
 	// Acquire the next image from the swap chaing
-	VK_CHECK_RESULT(mSwapChain.acquireNextImage(semaphores.presentComplete, &mCurrentBuffer));
+	VK_CHECK_RESULT(mSwapChain.acquireNextImage(mSemaphores.presentComplete, &mCurrentBuffer));
 }
 
 void VulkanExampleBase::submitFrame()
@@ -642,10 +641,10 @@ void VulkanExampleBase::submitFrame()
 		// Set semaphores
 		// Wait for render complete semaphore
 		mSubmitInfo.waitSemaphoreCount = 1;
-		mSubmitInfo.pWaitSemaphores = &semaphores.renderComplete;
+		mSubmitInfo.pWaitSemaphores = &mSemaphores.renderComplete;
 		// Signal ready with text overlay complete semaphpre
 		mSubmitInfo.signalSemaphoreCount = 1;
-		mSubmitInfo.pSignalSemaphores = &semaphores.textOverlayComplete;
+		mSubmitInfo.pSignalSemaphores = &mSemaphores.textOverlayComplete;
 
 		// Submit current text overlay command buffer
 		mSubmitInfo.commandBufferCount = 1;
@@ -657,31 +656,20 @@ void VulkanExampleBase::submitFrame()
 		// Reset wait and signal semaphores for rendering next frame
 		// Wait for swap chain presentation to finish
 		mSubmitInfo.waitSemaphoreCount = 1;
-		mSubmitInfo.pWaitSemaphores = &semaphores.presentComplete;
+		mSubmitInfo.pWaitSemaphores = &mSemaphores.presentComplete;
 		// Signal ready with offscreen semaphore
 		mSubmitInfo.signalSemaphoreCount = 1;
-		mSubmitInfo.pSignalSemaphores = &semaphores.renderComplete;
+		mSubmitInfo.pSignalSemaphores = &mSemaphores.renderComplete;
 	}
 
-	VK_CHECK_RESULT(mSwapChain.queuePresent(mQueue, mCurrentBuffer, submitTextOverlay ? semaphores.textOverlayComplete : semaphores.renderComplete));
+	VK_CHECK_RESULT(mSwapChain.queuePresent(mQueue, mCurrentBuffer, submitTextOverlay ? mSemaphores.textOverlayComplete : mSemaphores.renderComplete));
 
 	VK_CHECK_RESULT(vkQueueWaitIdle(mQueue));
 }
 
 VulkanExampleBase::VulkanExampleBase(bool enableValidation, PFN_GetEnabledFeatures enabledFeaturesFn)
 {
-	// Parse command line arguments
-	for (auto arg : args)
-	{
-		if (arg == std::string("-validation"))
-		{
-			enableValidation = true;
-		}
-		if (arg == std::string("-vsync"))
-		{
-			enableVSync = true;
-		}
-	}
+	
 #if defined(__ANDROID__)
 	// Vulkan library is loaded dynamically on Android
 	bool libLoaded = loadVulkanLibrary();
@@ -694,7 +682,7 @@ VulkanExampleBase::VulkanExampleBase(bool enableValidation, PFN_GetEnabledFeatur
 
 	if (enabledFeaturesFn != nullptr)
 	{
-		this->enabledFeatures = enabledFeaturesFn();
+		this->mEnabledFeatures = enabledFeaturesFn();
 	}
 
 #if defined(_WIN32)
@@ -749,9 +737,9 @@ VulkanExampleBase::~VulkanExampleBase()
 
 	vkDestroyCommandPool(mDevice, cmdPool, nullptr);
 
-	vkDestroySemaphore(mDevice, semaphores.presentComplete, nullptr);
-	vkDestroySemaphore(mDevice, semaphores.renderComplete, nullptr);
-	vkDestroySemaphore(mDevice, semaphores.textOverlayComplete, nullptr);
+	vkDestroySemaphore(mDevice, mSemaphores.presentComplete, nullptr);
+	vkDestroySemaphore(mDevice, mSemaphores.renderComplete, nullptr);
+	vkDestroySemaphore(mDevice, mSemaphores.textOverlayComplete, nullptr);
 
 	if (enableTextOverlay)
 	{
@@ -760,7 +748,7 @@ VulkanExampleBase::~VulkanExampleBase()
 
 	delete mVulkanDevice;
 
-	if (enableValidation)
+	if (mEnableValidation)
 	{
 		vkDebug::freeDebugCallback(mInstance);
 	}
@@ -827,7 +815,7 @@ void VulkanExampleBase::initVulkan(bool enableValidation)
 	// This is handled by a separate class that gets a logical device representation
 	// and encapsulates functions related to a device
 	mVulkanDevice = new vk::VulkanDevice(mPhysicalDevice);
-	VK_CHECK_RESULT(mVulkanDevice->createLogicalDevice(enabledFeatures));
+	VK_CHECK_RESULT(mVulkanDevice->createLogicalDevice(mEnabledFeatures));
 	mDevice = mVulkanDevice->mLogicalDevice;
 
 	// todo: remove
@@ -851,14 +839,14 @@ void VulkanExampleBase::initVulkan(bool enableValidation)
 	VkSemaphoreCreateInfo semaphoreCreateInfo = vkTools::initializers::semaphoreCreateInfo();
 	// Create a semaphore used to synchronize image presentation
 	// Ensures that the image is displayed before we start submitting new commands to the queu
-	VK_CHECK_RESULT(vkCreateSemaphore(mDevice, &semaphoreCreateInfo, nullptr, &semaphores.presentComplete));
+	VK_CHECK_RESULT(vkCreateSemaphore(mDevice, &semaphoreCreateInfo, nullptr, &mSemaphores.presentComplete));
 	// Create a semaphore used to synchronize command submission
 	// Ensures that the image is not presented until all commands have been sumbitted and executed
-	VK_CHECK_RESULT(vkCreateSemaphore(mDevice, &semaphoreCreateInfo, nullptr, &semaphores.renderComplete));
+	VK_CHECK_RESULT(vkCreateSemaphore(mDevice, &semaphoreCreateInfo, nullptr, &mSemaphores.renderComplete));
 	// Create a semaphore used to synchronize command submission
 	// Ensures that the image is not presented until all commands for the text overlay have been sumbitted and executed
 	// Will be inserted after the render complete semaphore if the text overlay is enabled
-	VK_CHECK_RESULT(vkCreateSemaphore(mDevice, &semaphoreCreateInfo, nullptr, &semaphores.textOverlayComplete));
+	VK_CHECK_RESULT(vkCreateSemaphore(mDevice, &semaphoreCreateInfo, nullptr, &mSemaphores.textOverlayComplete));
 
 	// Set up submit info structure
 	// Semaphores will stay the same during application lifetime
@@ -866,9 +854,9 @@ void VulkanExampleBase::initVulkan(bool enableValidation)
 	mSubmitInfo = vkTools::initializers::submitInfo();
 	mSubmitInfo.pWaitDstStageMask = &submitPipelineStages;
 	mSubmitInfo.waitSemaphoreCount = 1;
-	mSubmitInfo.pWaitSemaphores = &semaphores.presentComplete;
+	mSubmitInfo.pWaitSemaphores = &mSemaphores.presentComplete;
 	mSubmitInfo.signalSemaphoreCount = 1;
-	mSubmitInfo.pSignalSemaphores = &semaphores.renderComplete;
+	mSubmitInfo.pSignalSemaphores = &mSemaphores.renderComplete;
 }
 
 #if defined(_WIN32)
@@ -887,14 +875,6 @@ HWND VulkanExampleBase::setupWindow(HINSTANCE hinstance, WNDPROC wndproc)
 	this->windowInstance = hinstance;
 
 	bool fullscreen = false;
-	for (auto arg : args)
-	{
-		if (arg == std::string("-fullscreen"))
-		{
-			fullscreen = true;
-		}
-	}
-
 	WNDCLASSEX wndClass;
 
 	wndClass.cbSize = sizeof(WNDCLASSEX);
@@ -1087,7 +1067,7 @@ void VulkanExampleBase::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 		short wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
 		zoom += (float)wheelDelta * 0.005f * zoomSpeed;
 		camera.translate(glm::vec3(0.0f, 0.0f, (float)wheelDelta * 0.005f * zoomSpeed));
-		viewUpdated = true;
+		mViewUpdated = true;
 		break;
 	}
 	case WM_MOUSEMOVE:
@@ -1098,7 +1078,7 @@ void VulkanExampleBase::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 			zoom += (mousePos.y - (float)posy) * .005f * zoomSpeed;
 			camera.translate(glm::vec3(-0.0f, 0.0f, (mousePos.y - (float)posy) * .005f * zoomSpeed));
 			mousePos = glm::vec2((float)posx, (float)posy);
-			viewUpdated = true;
+			mViewUpdated = true;
 		}
 		if (wParam & MK_LBUTTON)
 		{
@@ -1108,7 +1088,7 @@ void VulkanExampleBase::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 			rotation.y -= (mousePos.x - (float)posx) * 1.25f * rotationSpeed;
 			camera.rotate(glm::vec3((mousePos.y - (float)posy) * camera.rotationSpeed, -(mousePos.x - (float)posx) * camera.rotationSpeed, 0.0f));
 			mousePos = glm::vec2((float)posx, (float)posy);
-			viewUpdated = true;
+			mViewUpdated = true;
 		}
 		if (wParam & MK_MBUTTON)
 		{
@@ -1117,7 +1097,7 @@ void VulkanExampleBase::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 			cameraPos.x -= (mousePos.x - (float)posx) * 0.01f;
 			cameraPos.y -= (mousePos.y - (float)posy) * 0.01f;
 			camera.translate(glm::vec3(-(mousePos.x - (float)posx) * 0.01f, -(mousePos.y - (float)posy) * 0.01f, 0.0f));
-			viewUpdated = true;
+			mViewUpdated = true;
 			mousePos.x = (float)posx;
 			mousePos.y = (float)posy;
 		}
@@ -1336,20 +1316,20 @@ void VulkanExampleBase::handleEvent(const xcb_generic_event_t *event)
 			rotation.x += (mousePos.y - (float)motion->event_y) * 1.25f;
 			rotation.y -= (mousePos.x - (float)motion->event_x) * 1.25f;
 			camera.rotate(glm::vec3((mousePos.y - (float)motion->event_y) * camera.rotationSpeed, -(mousePos.x - (float)motion->event_x) * camera.rotationSpeed, 0.0f));
-			viewUpdated = true;
+			mViewUpdated = true;
 		}
 		if (mouseButtons.right)
 		{
 			zoom += (mousePos.y - (float)motion->event_y) * .005f;
 			camera.translate(glm::vec3(-0.0f, 0.0f, (mousePos.y - (float)motion->event_y) * .005f * zoomSpeed));
-			viewUpdated = true;
+			mViewUpdated = true;
 		}
 		if (mouseButtons.middle)
 		{
 			cameraPos.x -= (mousePos.x - (float)motion->event_x) * 0.01f;
 			cameraPos.y -= (mousePos.y - (float)motion->event_y) * 0.01f;
 			camera.translate(glm::vec3(-(mousePos.x - (float)(float)motion->event_x) * 0.01f, -(mousePos.y - (float)motion->event_y) * 0.01f, 0.0f));
-			viewUpdated = true;
+			mViewUpdated = true;
 			mousePos.x = (float)motion->event_x;
 			mousePos.y = (float)motion->event_y;
 		}
@@ -1696,5 +1676,5 @@ void VulkanExampleBase::initSwapchain()
 
 void VulkanExampleBase::setupSwapChain()
 {
-	mSwapChain.create(&width, &height, enableVSync);
+	mSwapChain.create(&width, &height, mEnableVSync);
 }

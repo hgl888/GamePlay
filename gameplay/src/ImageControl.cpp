@@ -5,7 +5,7 @@ namespace vk
 {
 
 ImageControl::ImageControl() :
-    _srcRegion(Rectangle::empty()), _dstRegion(Rectangle::empty()), _batch(NULL),
+    _srcRegion(VkRectangle::empty()), _dstRegion(VkRectangle::empty()), _batch(NULL),
     _tw(0.0f), _th(0.0f), _uvs(Theme::UVs::full())
 {
 }
@@ -86,12 +86,12 @@ void ImageControl::setRegionSrc(float x, float y, float width, float height)
     _uvs.v2 = 1.0f - ((y + height) * _th);
 }
 
-void ImageControl::setRegionSrc(const Rectangle& region)
+void ImageControl::setRegionSrc(const VkRectangle& region)
 {
     setRegionSrc(region.x, region.y, region.width, region.height);
 }
 
-const Rectangle& ImageControl::getRegionSrc() const
+const VkRectangle& ImageControl::getRegionSrc() const
 {
     return _srcRegion;
 }
@@ -101,17 +101,17 @@ void ImageControl::setRegionDst(float x, float y, float width, float height)
     _dstRegion.set(x, y, width, height);
 }
 
-void ImageControl::setRegionDst(const Rectangle& region)
+void ImageControl::setRegionDst(const VkRectangle& region)
 {
     setRegionDst(region.x, region.y, region.width, region.height);
 }
 
-const Rectangle& ImageControl::getRegionDst() const
+const VkRectangle& ImageControl::getRegionDst() const
 {
     return _dstRegion;
 }
 
-unsigned int ImageControl::drawImages(Form* form, const Rectangle& clip)
+unsigned int ImageControl::drawImages(Form* form, const VkRectangle& clip)
 {
     if (!_batch)
         return 0;

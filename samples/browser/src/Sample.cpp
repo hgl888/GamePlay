@@ -77,12 +77,12 @@ unsigned int Sample::getFrameRate() const
     return Game::getInstance()->getFrameRate();
 }
 
-const Rectangle& Sample::getViewport() const
+const VkRectangle& Sample::getViewport() const
 {
     return Game::getInstance()->getViewport();
 }
 
-void Sample::setViewport(const Rectangle& viewport)
+void Sample::setViewport(const VkRectangle& viewport)
 {
 	Game::getInstance()->setViewport(viewport);
 }

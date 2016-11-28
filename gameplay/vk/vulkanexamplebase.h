@@ -34,7 +34,7 @@
 #include "vulkanTextureLoader.hpp"
 #include "vulkanMeshLoader.hpp"
 #include "vulkantextoverlay.hpp"
-#include "camera.hpp"
+#include "vkcamera.hpp"
 
 // Function pointer for getting physical device fetures to be enabled
 typedef VkPhysicalDeviceFeatures (*PFN_GetEnabledFeatures)();
@@ -43,25 +43,24 @@ class VulkanExampleBase
 {
 private:	
 	// Set to true when example is created with enabled validation layers
-	bool enableValidation = false;
+	bool mEnableValidation = false;
 	// Set to true if v-sync will be forced for the swapchain
-	bool enableVSync = false;
+	bool mEnableVSync = false;
 	// Device features enabled by the example
 	// If not set, no additional features are enabled (may result in validation layer errors)
-	VkPhysicalDeviceFeatures enabledFeatures = {};
+	VkPhysicalDeviceFeatures mEnabledFeatures = {};
 	// fps timer (one second interval)
-	float fpsTimer = 0.0f;
-	// Create application wide Vulkan instance
-	VkResult createInstance(bool enableValidation);
-	// Get window title with example name, device, et.
-	std::string getWindowTitle();
+	float mFpsTimer = 0.0f;
 	/** brief Indicates that the view (position, rotation) has changed and */
-	bool viewUpdated = false;
+	bool mViewUpdated = false;
 	// Destination dimensions for resizing the window
 	uint32_t destWidth;
 	uint32_t destHeight;
 	bool resizing = false;
 	// Called if the window is resized and some resources have to be recreatesd
+
+	VkResult createInstance(bool enableValidation);
+	std::string getWindowTitle();
 	void windowResize();
 protected:
 	// Last frame time, measured using a high performance timer (if available)
@@ -123,7 +122,7 @@ protected:
 		VkSemaphore renderComplete;
 		// Text overlay submission and execution
 		VkSemaphore textOverlayComplete;
-	} semaphores;
+	} mSemaphores;
 	// Simple texture loader
 	vkTools::VulkanTextureLoader *textureLoader = nullptr;
 	// Returns the base asset path (for shaders, models, textures) depending on the os
@@ -136,8 +135,6 @@ public:
 	VkClearColorValue defaultClearColor = { { 0.025f, 0.025f, 0.025f, 1.0f } };
 
 	float zoom = 0;
-
-	static std::vector<const char*> args;
 
 	// Defines a frame rate independent timer value clamped from -1.0...1.0
 	// For use in animations, rotations, etc.
@@ -155,7 +152,7 @@ public:
 	// Use to adjust mouse zoom speed
 	float zoomSpeed = 1.0f;
 
-	Camera camera;
+	VkCamera camera;
 
 	glm::vec3 rotation = glm::vec3();
 	glm::vec3 cameraPos = glm::vec3();
@@ -346,85 +343,3 @@ public:
 	void submitFrame();
 
 };
-
-// OS specific macros for the example main entry points
-#if defined(_WIN32)
-// Windows entry point
-#define VULKAN_EXAMPLE_MAIN()																		\
-VulkanExample *vulkanExample;																		\
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)						\
-{																									\
-	if (vulkanExample != NULL)																		\
-	{																								\
-		vulkanExample->handleMessages(hWnd, uMsg, wParam, lParam);									\
-	}																								\
-	return (DefWindowProc(hWnd, uMsg, wParam, lParam));												\
-}																									\
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)	\
-{																									\
-	for (size_t i = 0; i < __argc; i++) { VulkanExample::args.push_back(__argv[i]); };  			\
-	vulkanExample = new VulkanExample();															\
-	vulkanExample->setupWindow(hInstance, WndProc);													\
-	vulkanExample->initSwapchain();																	\
-	vulkanExample->prepare();																		\
-	vulkanExample->renderLoop();																	\
-	delete(vulkanExample);																			\
-	return 0;																						\
-}																									
-#elif defined(__ANDROID__)
-// Android entry point
-// A note on app_dummy(): This is required as the compiler may otherwise remove the main entry point of the application
-#define VULKAN_EXAMPLE_MAIN()																		\
-VulkanExample *vulkanExample;																		\
-void android_main(android_app* state)																\
-{																									\
-	app_dummy();																					\
-	vulkanExample = new VulkanExample();															\
-	state->userData = vulkanExample;																\
-	state->onAppCmd = VulkanExample::handleAppCommand;												\
-	state->onInputEvent = VulkanExample::handleAppInput;											\
-	vulkanExample->androidApp = state;																\
-	vulkanExample->renderLoop();																	\
-	delete(vulkanExample);																			\
-}
-#elif defined(_DIRECT2DISPLAY)
-// Linux entry point with direct to display wsi
-// todo: extract command line arguments
-#define VULKAN_EXAMPLE_MAIN()																		\
-VulkanExample *vulkanExample;																		\
-static void handleEvent()                                											\
-{																									\
-}																									\
-int main(const int argc, const char *argv[])													    \
-{																									\
-	vulkanExample = new VulkanExample();															\
-	vulkanExample->initSwapchain();																	\
-	vulkanExample->prepare();																		\
-	vulkanExample->renderLoop();																	\
-	delete(vulkanExample);																			\
-	return 0;																						\
-}
-#elif defined(__linux__)
-// Linux entry point
-// todo: extract command line arguments
-#define VULKAN_EXAMPLE_MAIN()																		\
-VulkanExample *vulkanExample;																		\
-static void handleEvent(const xcb_generic_event_t *event)											\
-{																									\
-	if (vulkanExample != NULL)																		\
-	{																								\
-		vulkanExample->handleEvent(event);															\
-	}																								\
-}																									\
-int main(const int argc, const char *argv[])													    \
-{																									\
-	for (size_t i = 0; i < argc; i++) { VulkanExample::args.push_back(argv[i]); };  				\
-	vulkanExample = new VulkanExample();															\
-	vulkanExample->setupWindow();					 												\
-	vulkanExample->initSwapchain();																	\
-	vulkanExample->prepare();																		\
-	vulkanExample->renderLoop();																	\
-	delete(vulkanExample);																			\
-	return 0;																						\
-}
-#endif

@@ -6,7 +6,7 @@
 #include "Vector2.h"
 #include "Vector4.h"
 #include "Texture.h"
-#include "Rectangle.h"
+#include "VkRectangle.h"
 #include "SpriteBatch.h"
 #include "Properties.h"
 #include "Drawable.h"
@@ -633,7 +633,7 @@ public:
      * @param frameCoords A rectangle for each frame representing its position and size
      *  within the texture image, measured in pixels.
      */
-    void setSpriteFrameCoords(unsigned int frameCount, Rectangle* frameCoords);
+    void setSpriteFrameCoords(unsigned int frameCount, VkRectangle* frameCoords);
 
     /**
      * Calculates and sets the sprite's texture coordinates based on the width and
